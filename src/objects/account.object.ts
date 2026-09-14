@@ -196,13 +196,16 @@ export const Account = ObjectSchema.create({
     }),
 
     // Process sheet step 5 (客户信息审批): a customer takes effect after review.
-    // Absent on rows that predate the field (the stock HotCRM seeds) — the
-    // opportunity gate treats an absent status as active, so only a customer
-    // that is DRAFT / SUBMITTED / REJECTED is refused an opportunity.
+    // ⚠️ Deliberately NO field-level `defaultValue`: only the option-level
+    // `default: true` below, which preselects "Draft" in the console's create
+    // form and nothing else. A seed or API insert that omits the field lands
+    // it ABSENT, and the opportunity gate reads absent as active — so the
+    // stock HotCRM seeds (nine accounts, twenty-odd deals on them) keep
+    // loading, while an account a person creates in the UI starts as a draft
+    // that must be submitted and reviewed before it can carry an opportunity.
     account_status: Field.select({
       label: 'Review Status',
       group: 'basic',
-      defaultValue: 'draft',
       trackHistory: true,
       options: [
         { label: 'Draft',      value: 'draft',     color: '#999999', default: true },

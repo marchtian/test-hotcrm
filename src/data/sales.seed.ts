@@ -159,6 +159,9 @@ export const accounts = defineSeed(Account, {
   records: [
     {
       name: 'Acme Corporation',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'technology',
       annual_revenue: 5000000,
@@ -215,6 +218,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Globex Industries',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'manufacturing',
       annual_revenue: 12000000,
@@ -230,6 +236,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Initech Solutions',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'finance',
       annual_revenue: 3500000,
@@ -248,6 +257,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Stark Medical',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'partner',
       industry: 'healthcare',
       annual_revenue: 8000000,
@@ -281,6 +293,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Wayne Enterprises',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'technology',
       annual_revenue: 25000000,
@@ -309,6 +324,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Northwind Energy',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'energy',
       annual_revenue: 18000000,
@@ -327,6 +345,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Vertex Analytics',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'software',
       annual_revenue: 9500000,
@@ -343,6 +364,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Lattice Education',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'education',
       annual_revenue: 6800000,
@@ -365,6 +389,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Apex Logistics',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'logistics',
       annual_revenue: 22000000,

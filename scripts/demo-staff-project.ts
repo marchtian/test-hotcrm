@@ -55,7 +55,7 @@ function assertLocal(url: string): URL {
 class Api {
   private cookie = '';
   constructor(private readonly base: URL) {}
-  private async call(method: string, path: string, body?: Json): Promise<{ status: number; json: Json }> {
+  async call(method: string, path: string, body?: Json): Promise<{ status: number; json: Json }> {
     const res = await fetch(new URL(path, this.base), {
       method,
       headers: { 'Content-Type': 'application/json', Origin: this.base.origin, ...(this.cookie ? { Cookie: this.cookie } : {}) },
@@ -139,7 +139,58 @@ async function main() {
     }
   }
 
-  // 3. verify the masking that the third scene shows
+  // 2b. the presenter (dev admin) holds every approver POSITION the flows
+  //     route to, so each submitted item lands in their "待我审批" tab and the
+  //     j / k / a / r shortcuts work — instead of the admin-rescue fallback.
+  const ADMIN_POSITIONS = ['sales_manager', 'sales_director', 'pmo_director', 'pmo_manager', 'finance_manager', 'presales_manager'];
+  const me = (await api.get('/api/v1/auth/get-session')).json?.user ?? {};
+  const adminId: string | undefined = me?.id;
+  if (adminId) {
+    const held = (await api.records('sys_user_position', 500)).filter((r) => r.user_id === adminId).map((r) => String(r.position));
+    for (const position of ADMIN_POSITIONS) {
+      if (held.includes(position)) continue;
+      await api.postOk('/api/v1/data/sys_user_position', { user_id: adminId, position, ...(org ? { organization_id: org } : {}) });
+      console.log(`  + admin holds ${position}`);
+    }
+  }
+
+  // 3. claim ownerless project-domain rows — a seed cannot name a user, and an
+  //    approval flow's notify node needs a recipient (the record owner). Same
+  //    idea as `demo_bootstrap` for the CRM objects: timesheets and expense
+  //    claims go to the project manager (so "My Timesheets" has rows), the
+  //    rest to the dev admin.
+  const pmUser = (await api.records('sys_user', 500)).find((u) => u.email === ProjectDemoStaff[0].email);
+  const claims: Array<[string, string | undefined]> = [
+    ['crm_presales_project', adminId], ['crm_delivery_project', adminId], ['crm_budget_adjustment', adminId],
+    ['crm_opportunity_change_request', adminId], ['crm_timesheet', pmUser?.id], ['crm_expense_claim', pmUser?.id],
+  ];
+  for (const [object, ownerId] of claims) {
+    if (!ownerId) continue;
+    let n = 0;
+    for (const row of await api.records(object, 500)) {
+      if (row.owner_id) continue;
+      const { status, json } = await api.call('PATCH', `/api/v1/data/${object}/${row.id}`, { owner_id: ownerId });
+      if (status < 400 && !json?.error) n++;
+    }
+    if (n) console.log(`  ~ ${object}: ${n} ownerless row(s) claimed`);
+  }
+
+  // 3b. field-routed approvers: the project director on presales / delivery
+  //     projects is the presenter; the project manager on delivery projects is
+  //     the demo PM, so every timesheet routes to them (the hook copies it).
+  if (adminId) {
+    for (const object of ['crm_presales_project', 'crm_delivery_project']) {
+      for (const row of await api.records(object, 500)) {
+        const patch: Json = {};
+        if (!row.project_director) patch.project_director = adminId;
+        if (object === 'crm_delivery_project' && !row.project_manager && pmUser?.id) patch.project_manager = pmUser.id;
+        if (Object.keys(patch).length) await api.call('PATCH', `/api/v1/data/${object}/${row.id}`, patch);
+      }
+    }
+    console.log('  ~ project director / project manager filled on presales and delivery projects');
+  }
+
+  // 4. verify the masking that the third scene shows
   const pm = new Api(base);
   await pm.postOk('/api/v1/auth/sign-in/email', { email: ProjectDemoStaff[0].email, password: ProjectDemoStaff[0].password });
   const rows = await pm.records('crm_delivery_project', 3);
