@@ -28,6 +28,14 @@ import productHook from '../objects/product.hook';
 import quoteHook from '../objects/quote.hook';
 import quoteLineItemHook from '../objects/quote_line_item.hook';
 import taskHook from '../objects/task.hook';
+// Project domain (digital-tech company demo).
+import presalesProjectHook from '../objects/presales_project.hook';
+import deliveryProjectHook from '../objects/delivery_project.hook';
+import timesheetHook from '../objects/timesheet.hook';
+import expenseClaimHook from '../objects/expense_claim.hook';
+import budgetAdjustmentHook from '../objects/budget_adjustment.hook';
+import opportunityGateHook from '../objects/opportunity_gate.hook';
+import opportunityChangeRequestHook from '../objects/opportunity_change_request.hook';
 
 const entries: Array<Hook | Hook[]> = [
   accountHook,
@@ -47,6 +55,13 @@ const entries: Array<Hook | Hook[]> = [
   quoteHook,
   quoteLineItemHook,
   taskHook,
+  presalesProjectHook,
+  deliveryProjectHook,
+  timesheetHook,
+  expenseClaimHook,
+  budgetAdjustmentHook,
+  opportunityGateHook,
+  opportunityChangeRequestHook,
 ];
 
 /** Flat list of every CRM lifecycle hook (each `*.hook.ts` may export one or many). */

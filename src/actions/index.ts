@@ -29,3 +29,4 @@ export {
 export { MarkArticleHelpfulAction, MarkArticleNotHelpfulAction } from './knowledge_article.actions';
 export { ConvertLeadAction, CreateCampaignAction, ScheduleFollowUpAction } from './lead.actions';
 export { CloneOpportunityAction, MassUpdateStageAction, GenerateQuoteAction } from './opportunity.actions';
+export { CreatePresalesProjectAction, CreateDeliveryProjectAction } from './presales_project.actions';

@@ -148,11 +148,15 @@ export const DeliveryProject = ObjectSchema.create({
     // Sum of APPROVED `crm_budget_adjustment` rows — written by that object's
     // rollup hook. The baseline itself never moves (step 32): an increase is
     // recorded beside it, so the report can show baseline / adjusted / actual.
+    // ⚠️ NOT `readonly`: written by `budget_adjustment.hook.ts` through a
+    // user-context update, and `stripReadonlyFields` deletes a readonly key
+    // from exactly that path (measured: the derived `budget_total` landed while
+    // this raw input came back null). Same for the two `actual_*` inputs.
     budget_adjustment: Field.currency({
       label: 'Approved Budget Increase',
+      description: 'Rolled up from approved budget adjustments — not edited by hand.',
       group: 'budget',
       scale: 2,
-      readonly: true,
     }),
 
     budget_total: Field.currency({
@@ -163,8 +167,8 @@ export const DeliveryProject = ObjectSchema.create({
     }),
 
     // ─── Cost execution (steps 33–36) ──────────────────────────────────
-    actual_labor_cost: Field.currency({ label: 'Actual Labor Cost', group: 'actuals', scale: 2, readonly: true }),
-    actual_expense_cost: Field.currency({ label: 'Actual Expenses', group: 'actuals', scale: 2, readonly: true }),
+    actual_labor_cost: Field.currency({ label: 'Actual Labor Cost', description: 'Rolled up from submitted / approved timesheets.', group: 'actuals', scale: 2 }),
+    actual_expense_cost: Field.currency({ label: 'Actual Expenses', description: 'Rolled up from submitted / approved expense claims.', group: 'actuals', scale: 2 }),
     actual_total_cost: Field.currency({ label: 'Actual Total Cost', group: 'actuals', scale: 2, readonly: true }),
 
     budget_used_pct: Field.percent({
