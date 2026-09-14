@@ -14,3 +14,10 @@ export { ForecastViews } from './forecast.view';
 export { KnowledgeArticleViews } from './knowledge_article.view';
 export { ProductViews } from './product.view';
 export { QuoteViews } from './quote.view';
+// Project domain (digital-tech company demo).
+export { PresalesProjectViews } from './presales_project.view';
+export { DeliveryProjectViews } from './delivery_project.view';
+export { TimesheetViews } from './timesheet.view';
+export { ExpenseClaimViews } from './expense_claim.view';
+export { BudgetAdjustmentViews } from './budget_adjustment.view';
+export { OpportunityChangeRequestViews } from './opportunity_change_request.view';

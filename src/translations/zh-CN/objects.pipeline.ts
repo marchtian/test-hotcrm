@@ -288,6 +288,21 @@ export const pipeline: Record<string, ObjectTranslationData> = {
         },
       },
       loss_details: { label: '赢/丢单详情', help: '赢单或丢单原因的补充说明。' },
+      // 商机立项信息（需求表步骤 8–9）与铁三角（步骤 13）
+      is_bid: { label: '是否投标' },
+      opportunity_level: { label: '商机级别', options: { level_a: 'A 级 — 战略', level_b: 'B 级 — 重点', level_c: 'C 级 — 常规', level_d: 'D 级 — 一般' } },
+      priority: { label: '优先级', options: { high: '高', medium: '中', low: '低' } },
+      controllability: { label: '可控性', options: { high: '高', medium: '中', low: '低' } },
+      signing_entity: { label: '签约主体', options: { dt_main: '数科公司', group_hq: '集团总部', regional_sub: '区域子公司' } },
+      business_category: { label: '业务分类', options: { erp: 'ERP / 财务', mes: 'MES / 生产', energy: '能源与碳管理', data: '数据与 AI', security: '安全生产', infra: '基础设施与云', crm: '销售与 CRM', other: '其他' } },
+      project_name: { label: '项目名称' },
+      revenue_type: { label: '收入确认类型', options: { fixed_price: '固定总价项目', time_and_materials: '人天计费', subscription: '订阅', internal_settlement: '内部结算' } },
+      customer_approval_date: { label: '客户立项时间' },
+      expected_sign_date: { label: '预计签约时间' },
+      risk_analysis: { label: '风险分析' },
+      account_manager: { label: '客户经理' },
+      solution_manager: { label: '解决方案经理' },
+      delivery_manager: { label: '交付经理' },
     },
     _views: {
       open_opportunities: { label: '进行中商机' },
@@ -318,6 +333,8 @@ export const pipeline: Record<string, ObjectTranslationData> = {
       classification: { label: '分类' },
       campaign: { label: '营销活动' },
       notes: { label: '备注与下一步' },
+      initiation: { label: '立项信息' },
+      iron_triangle: { label: '铁三角' },
       // opportunity.view.ts 表单区块名称 (#1100)
       overview: { label: '概览' },
       forecast: { label: '预测' },
@@ -333,6 +350,10 @@ export const pipeline: Record<string, ObjectTranslationData> = {
       generate_quote: {
         label: '生成报价单',
         successMessage: '已根据商机创建报价单！',
+      },
+      create_presales_project: {
+        label: '生成售前立项',
+        successMessage: '已根据商机生成售前立项，项目信息、客户、金额、铁三角均已带入。',
       },
       mass_update_stage: {
         label: '更新阶段',

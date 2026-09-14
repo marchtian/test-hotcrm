@@ -21,48 +21,75 @@ import type { TranslationData } from '@objectstack/spec/system';
 export const appSurface: Omit<TranslationData, 'objects'> = {
   apps: {
     crm_enterprise: {
-      label: 'HotCRM',
-      description: '涵盖销售、服务和市场营销的客户关系管理系统',
+      label: '数科经营平台',
+      description: 'CRM 与项管平台两个区域：客户 → 商机 → 立项 → 成本 → 报表',
       // Keyed by navigation-node `id` (a flat keyspace regardless of depth).
+      // Group names follow the customer's process sheet, 系统路径 column.
       navigation: {
-        group_activity: { label: '活动' },
-        nav_event: { label: '活动' },
-        nav_activity_dashboard: { label: '销售活动' },
-        nav_my_calendar: { label: '我的日历' },
         nav_home: { label: '首页' },
 
-        group_sales: { label: '销售' },
-        nav_lead: { label: '线索' },
+        group_customer: { label: '客户管理' },
         nav_account: { label: '客户' },
         nav_account_workbench: { label: '客户工作台' },
         nav_contact: { label: '联系人' },
+
+        group_lead: { label: '线索管理' },
+        nav_lead: { label: '线索' },
+        nav_my_leads: { label: '我的线索' },
+
+        group_opportunity: { label: '商机管理' },
         nav_opportunity: { label: '商机' },
+        nav_my_deals: { label: '我的商机' },
+        nav_change_request: { label: '状态变更申请' },
         nav_quote: { label: '报价' },
         nav_contract: { label: '合同' },
         nav_product: { label: '产品' },
         nav_sales_dashboard: { label: '销售业绩' },
 
-        group_work: { label: '我的工作' },
-        nav_my_tasks: { label: '我的任务' },
-        nav_my_deals: { label: '我的商机' },
-        nav_my_leads: { label: '我的线索' },
-        nav_my_cases: { label: '我的工单' },
+        group_approval: { label: '审批中心' },
         nav_approval_requests: { label: '待我审批' },
 
-        group_marketing: { label: '市场营销' },
-        nav_campaign: { label: '营销活动' },
-
-        group_service: { label: '服务' },
-        nav_case: { label: '工单' },
-        nav_knowledge: { label: '知识库' },
-        nav_service_dashboard: { label: '服务概览' },
+        group_work: { label: '我的工作' },
+        nav_my_tasks: { label: '我的任务' },
+        nav_my_calendar: { label: '我的日历' },
 
         group_insights: { label: '数据洞察' },
         nav_crm_dashboard: { label: 'CRM 总览' },
         nav_forecast: { label: '销售预测' },
         nav_report_pipeline_coverage: { label: '管道覆盖率' },
         nav_report_lead_inflow: { label: '线索流入' },
-        nav_report_sla: { label: 'SLA 达成' },
+
+        // ── 项管平台 区域 ──
+        pp_home: { label: '首页' },
+
+        pp_group_presales: { label: '售前立项' },
+        pp_presales: { label: '售前项目' },
+        pp_presales_board: { label: '售前看板' },
+        pp_opportunity: { label: 'CRM 商机' },
+
+        pp_group_delivery: { label: '交付立项' },
+        pp_delivery: { label: '交付项目' },
+
+        pp_group_cost_plan: { label: '成本计划' },
+        pp_cost_plan: { label: '成本计划' },
+        pp_budget_adjustment: { label: '预算追加申请' },
+
+        pp_group_cost_exec: { label: '成本执行' },
+        pp_cost_monitor: { label: '成本监控' },
+        pp_cost_board: { label: '成本状态看板' },
+        pp_expense: { label: '差旅报销' },
+
+        pp_group_timesheet: { label: '工时填写' },
+        pp_my_timesheets: { label: 'TS 月度填写' },
+        pp_timesheets: { label: '全部工时' },
+        pp_timesheet_approval: { label: '工时审批' },
+
+        pp_group_reports: { label: '项目报表' },
+        pp_project_dashboard: { label: '项目经营看板' },
+        pp_sales_dashboard: { label: '销售业绩' },
+
+        pp_group_approvals: { label: '审批中心' },
+        pp_inbox: { label: '待我审批' },
       },
     },
   },
@@ -90,6 +117,21 @@ export const appSurface: Omit<TranslationData, 'objects'> = {
     'error.load_failed': '数据加载失败',
   },
   dashboards: {
+    project_dashboard: {
+      label: '项目经营看板',
+      description: '交付项目的预算基线 / 调整后 / 实际成本、成本状态与毛利',
+      widgets: {
+        active_projects: { title: '在建项目', description: '立项中与执行中的交付项目' },
+        total_budget: { title: '预算总额', description: '基线加已批准追加' },
+        total_actual_cost: { title: '实际成本', description: '已提交 / 已审批的工时与费用' },
+        over_budget_projects: { title: '超支项目', description: '实际成本超过预算总额的项目' },
+        budget_vs_actual_by_project: { title: '基线 · 调整后 · 实际（按项目）', description: '预算从哪里开始、现在在哪里、已经花了多少' },
+        cost_status_mix: { title: '成本状态', description: '正常、预警与超支的项目数' },
+        by_executing_cost_center: { title: '按实施成本中心', description: '干活的部门' },
+        by_accounting_cost_center: { title: '按核算成本中心', description: '背成本的部门' },
+        contract_vs_cost_by_project: { title: '合同额 vs 实际成本（按项目）', description: '把毛利画出来' },
+      },
+    },
     sales_activity_dashboard: {
       label: '销售活动',
       description: '谁在和客户沟通、频率如何，以及哪些客户已经沉默',
@@ -189,6 +231,31 @@ export const appSurface: Omit<TranslationData, 'objects'> = {
   // the console substitutes on the raw key, so a translated token resolves to
   // nothing and the header renders blank.
   datasets: {
+    project_metrics: {
+      label: '项目指标',
+      description: '交付项目预算、成本与毛利的语义层',
+      dimensions: {
+        project: { label: '项目' },
+        status: { label: '状态' },
+        cost_status: { label: '成本状态' },
+        cost_center: { label: '实施成本中心' },
+        accounting_cost_center: { label: '核算成本中心' },
+        business_category: { label: '业务分类' },
+        account: { label: '客户' },
+        account_category: { label: '客户分类' },
+        project_manager: { label: '项目经理' },
+      },
+      measures: {
+        project_count: { label: '项目数' },
+        budget_baseline_sum: { label: '预算基线' },
+        budget_total_sum: { label: '预算总额' },
+        actual_total_sum: { label: '实际成本' },
+        actual_labor_sum: { label: '实际人工成本' },
+        actual_expense_sum: { label: '实际项目费用' },
+        contract_sum: { label: '合同额' },
+        avg_budget_used: { label: '平均预算执行率' },
+      },
+    },
     account_metrics: {
       label: '客户指标',
       description: '按行业与类型统计客户数量的语义层',

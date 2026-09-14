@@ -9,6 +9,7 @@ import { commerce } from './zh-CN/objects.commerce';
 import { service } from './zh-CN/objects.service';
 import { activity } from './zh-CN/objects.activity';
 import { marketing } from './zh-CN/objects.marketing';
+import { project } from './zh-CN/objects.project';
 
 /**
  * 简体中文 (zh-CN) — CRM App Translations
@@ -61,6 +62,14 @@ export const zhCN: TranslationData = {
     crm_lead: pipeline.crm_lead,
     crm_quote: commerce.crm_quote,
     crm_contract: commerce.crm_contract,
+    // Project family (digital-tech company demo) — appended, so the rows above
+    // keep their historical order and the built artifact stays stable.
+    crm_presales_project: project.crm_presales_project,
+    crm_delivery_project: project.crm_delivery_project,
+    crm_timesheet: project.crm_timesheet,
+    crm_expense_claim: project.crm_expense_claim,
+    crm_budget_adjustment: project.crm_budget_adjustment,
+    crm_opportunity_change_request: project.crm_opportunity_change_request,
     crm_case: service.crm_case,
     crm_task: activity.crm_task,
     crm_campaign: marketing.crm_campaign,
