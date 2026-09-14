@@ -26,6 +26,13 @@ export const CrmPositions = [
   { name: 'marketing_director', label: 'Marketing Director' },
   { name: 'marketing_manager',  label: 'Marketing Manager' },
   { name: 'marketing_user',     label: 'Marketing User' },
+  // Project domain (digital-tech company demo) — approvers of the project
+  // approval flows and the two personas of the field-masking scene.
+  { name: 'pmo_director',       label: 'PMO Director' },
+  { name: 'pmo_manager',        label: 'PMO Manager' },
+  { name: 'finance_manager',    label: 'Finance Manager' },
+  { name: 'project_manager',    label: 'Project Manager' },
+  { name: 'presales_manager',   label: 'Presales Manager' },
   // Territory groupings referenced by the account sharing rules.
   { name: 'na_sales_team',      label: 'NA Sales Team' },
   { name: 'eu_sales_team',      label: 'EU Sales Team' },

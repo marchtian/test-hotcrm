@@ -1,6 +1,7 @@
 // Copyright (c) 2025 ObjectStack. Licensed under the Apache-2.0 license.
 
 import { ObjectSchema, Field } from '@objectstack/spec/data';
+import { CUSTOMER_CATEGORY_OPTIONS, PAYMENT_CYCLE_OPTIONS } from './_project-picklists';
 import { F } from '@objectstack/spec';
 import { INDUSTRY_OPTIONS } from './_picklists';
 import { TERRITORY_OPTIONS } from './_territory';
@@ -32,6 +33,8 @@ export const Account = ObjectSchema.create({
     { key: 'financials',   label: 'Financials',         icon: 'dollar-sign' },
     { key: 'contact_info', label: 'Contact Information', icon: 'phone' },
     { key: 'ownership',    label: 'Ownership & Status', icon: 'users' },
+    // Process sheet step 3 (客户业务信息完善) — digital-tech company demo.
+    { key: 'business',     label: 'Business Profile',   icon: 'briefcase', collapse: 'collapsed' },
     { key: 'branding',     label: 'Branding',           icon: 'palette', collapse: 'collapsed' },
     { key: 'system',       label: 'System',             icon: 'settings', collapse: 'collapsed' },
   ],
@@ -176,6 +179,65 @@ export const Account = ObjectSchema.create({
         { label: 'Partner', value: 'partner', color: '#0000FF' },
         { label: 'Former Customer', value: 'former', color: '#999999' },
       ]
+    }),
+
+    // ─── Customer classification & business profile (process sheet 1, 3) ──
+    //
+    // `customer_category` carries a RULE, not just a label: `bidding_agent` and
+    // `other` may be paid and collected from but may not open an opportunity —
+    // enforced by `opportunity_gate.hook.ts` on insert. `internal` is a group
+    // subsidiary the digital-tech company serves at internal settlement price.
+    customer_category: Field.select({
+      label: 'Customer Category',
+      group: 'basic',
+      defaultValue: 'regular',
+      trackHistory: true,
+      options: [...CUSTOMER_CATEGORY_OPTIONS],
+    }),
+
+    short_name: Field.text({
+      label: 'Short Name',
+      group: 'basic',
+      maxLength: 100,
+    }),
+
+    social_credit_code: Field.text({
+      label: 'Unified Social Credit Code',
+      group: 'basic',
+      maxLength: 18,
+    }),
+
+    incumbent_vendor: Field.text({
+      label: 'Incumbent IT Vendor',
+      group: 'business',
+      maxLength: 255,
+    }),
+
+    annual_it_budget: Field.currency({
+      label: 'Annual IT Budget',
+      group: 'business',
+      scale: 2,
+      min: 0,
+    }),
+
+    payment_cycle: Field.select({
+      label: 'Payment Cycle',
+      group: 'business',
+      options: [...PAYMENT_CYCLE_OPTIONS],
+    }),
+
+    is_strategic_partner: Field.boolean({
+      label: 'Strategic Partner',
+      group: 'business',
+      defaultValue: false,
+    }),
+
+    // Export-control flag — a MARK for compliance review, not an enforcement
+    // (the customer's sheet asks for the flag only).
+    ear_controlled: Field.boolean({
+      label: 'US EAR Controlled',
+      group: 'business',
+      defaultValue: false,
     }),
 
     industry: Field.select({

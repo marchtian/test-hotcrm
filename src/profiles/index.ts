@@ -137,3 +137,5 @@ export { ServiceAgentProfile } from './service-agent.profile';
 // are beside the export in `./service-agent.profile`.
 export { ServiceManagerProfile } from './service-agent.profile';
 export { SystemAdminProfile } from './system-admin.profile';
+export { ProjectManagerProfile } from './project-manager.profile';
+export { PmoDirectorProfile } from './pmo-director.profile';
