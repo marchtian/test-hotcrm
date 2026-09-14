@@ -37,6 +37,10 @@ export { OpportunityWonAlertFlow } from './opportunity-won-alert.flow';
 export { TaskUrgentAlertFlow } from './task-urgent-alert.flow';
 export { TaskDueReminderFlow } from './task-due-reminder.flow';
 export { PresalesProjectApprovalFlow } from './presales-project-approval.flow';
+export {
+  AccountApprovalFlow, LeadApprovalFlow, OpportunityChangeApprovalFlow,
+  DeliveryProjectApprovalFlow, BudgetAdjustmentApprovalFlow, TimesheetApprovalFlow,
+} from './project-approvals.flow';
 // Outbound integration: the billing hand-off — where CRM scope ends.
 export {
   BillingHandoffClosedWonFlow,
@@ -69,6 +73,10 @@ import { OpportunityWonAlertFlow } from './opportunity-won-alert.flow';
 import { TaskUrgentAlertFlow } from './task-urgent-alert.flow';
 import { TaskDueReminderFlow } from './task-due-reminder.flow';
 import { PresalesProjectApprovalFlow } from './presales-project-approval.flow';
+import {
+  AccountApprovalFlow, LeadApprovalFlow, OpportunityChangeApprovalFlow,
+  DeliveryProjectApprovalFlow, BudgetAdjustmentApprovalFlow, TimesheetApprovalFlow,
+} from './project-approvals.flow';
 import {
   BillingHandoffClosedWonFlow,
   BillingHandoffContractActivatedFlow,
@@ -115,4 +123,10 @@ export const allFlows: Flow[] = [
   BillingHandoffContractActivatedFlow,
   // Project domain (digital-tech company demo).
   PresalesProjectApprovalFlow,
+  AccountApprovalFlow,
+  LeadApprovalFlow,
+  OpportunityChangeApprovalFlow,
+  DeliveryProjectApprovalFlow,
+  BudgetAdjustmentApprovalFlow,
+  TimesheetApprovalFlow,
 ];

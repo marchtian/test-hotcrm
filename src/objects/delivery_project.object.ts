@@ -216,6 +216,7 @@ export const DeliveryProject = ObjectSchema.create({
       trackHistory: true,
       options: [
         { label: 'Planning',   value: 'planning', color: '#999999', default: true },
+        { label: 'Submitted',  value: 'submitted', color: '#FFA500' },
         { label: 'Active',     value: 'active',   color: '#00AA00' },
         { label: 'On Hold',    value: 'on_hold',  color: '#FFA500' },
         { label: 'Closed',     value: 'closed',   color: '#4169E1' },
@@ -265,7 +266,8 @@ export const DeliveryProject = ObjectSchema.create({
       message: 'Invalid delivery project status transition',
       field: 'status',
       transitions: {
-        planning: ['active', 'closed'],
+        planning: ['submitted', 'active', 'closed'],
+        submitted: ['planning', 'active'],
         active: ['on_hold', 'closed'],
         on_hold: ['active', 'closed'],
         closed: [],

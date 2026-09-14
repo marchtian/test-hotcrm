@@ -195,6 +195,36 @@ export const Account = ObjectSchema.create({
       options: [...CUSTOMER_CATEGORY_OPTIONS],
     }),
 
+    // Process sheet step 5 (客户信息审批): a customer takes effect after review.
+    // Absent on rows that predate the field (the stock HotCRM seeds) — the
+    // opportunity gate treats an absent status as active, so only a customer
+    // that is DRAFT / SUBMITTED / REJECTED is refused an opportunity.
+    account_status: Field.select({
+      label: 'Review Status',
+      group: 'basic',
+      defaultValue: 'draft',
+      trackHistory: true,
+      options: [
+        { label: 'Draft',      value: 'draft',     color: '#999999', default: true },
+        { label: 'Submitted',  value: 'submitted', color: '#FFA500' },
+        { label: 'Active',     value: 'active',    color: '#00AA00' },
+        { label: 'Rejected',   value: 'rejected',  color: '#FF0000' },
+      ],
+    }),
+
+    approval_status: Field.select({
+      label: 'Approval Status',
+      group: 'basic',
+      readonly: true,
+      defaultValue: 'not_required',
+      options: [
+        { label: 'Not Required', value: 'not_required', default: true },
+        { label: 'Pending',      value: 'pending',      color: '#FFA500' },
+        { label: 'Approved',     value: 'approved',     color: '#00AA00' },
+        { label: 'Rejected',     value: 'rejected',     color: '#FF0000' },
+      ],
+    }),
+
     short_name: Field.text({
       label: 'Short Name',
       group: 'basic',

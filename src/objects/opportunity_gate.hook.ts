@@ -49,12 +49,25 @@ const opportunityAccountCategoryGate: Hook = {
     if (!api) return;
     const account = await api.object('crm_account').findOne({
       where: { id: accountId },
-      fields: ['id', 'name', 'customer_category'],
+      fields: ['id', 'name', 'customer_category', 'account_status'],
     });
     if (!account) return;
+    const name = typeof account.name === 'string' ? account.name : accountId;
+    // Step 5: a customer takes effect after review. An ABSENT status (rows
+    // that predate the field) counts as active; only an explicit draft /
+    // submitted / rejected is refused.
+    const reviewStatus = typeof account.account_status === 'string' ? account.account_status : '';
+    if (reviewStatus && reviewStatus !== 'active') {
+      const STATUS_LABELS: Record<string, string> = { draft: '草稿', submitted: '审批中', rejected: '已驳回' };
+      throw refuse(
+        `Account "${name}" is not active (review status: ${reviewStatus}) and cannot carry an opportunity yet.`,
+        'ACCOUNT_NOT_ACTIVE',
+        409,
+        `客户「${name}」尚未审批生效（当前：${STATUS_LABELS[reviewStatus] ?? reviewStatus}），审批通过后才能关联商机、项目。`,
+      );
+    }
     const category = typeof account.customer_category === 'string' ? account.customer_category : '';
     if (!NON_SALES.has(category)) return;
-    const name = typeof account.name === 'string' ? account.name : accountId;
     throw refuse(
       `Account "${name}" is a ${category} customer and cannot initiate an opportunity.`,
       'ACCOUNT_CATEGORY_NOT_SALES',

@@ -45,6 +45,15 @@ export const customer: Record<string, ObjectTranslationData> = {
         help: '招标代理公司及其他类客户仅可用于付款回款，无法发起商机、投标、销售合同。',
         options: { regular: '常规销售客户', internal: '集团内子公司', bidding_agent: '招标代理公司', other: '其他' },
       },
+      account_status: {
+        label: '审核状态',
+        help: '客户信息提交后进入审批流，审批通过后客户正式生效，方可关联商机、项目。',
+        options: { draft: '草稿', submitted: '已提交审批', active: '已生效', rejected: '已驳回' },
+      },
+      approval_status: {
+        label: '审批状态',
+        options: { not_required: '无需审批', pending: '审批中', approved: '已批准', rejected: '已驳回' },
+      },
       short_name: { label: '客户简称' },
       social_credit_code: { label: '统一社会信用代码' },
       incumbent_vendor: { label: '当前主要服务商' },

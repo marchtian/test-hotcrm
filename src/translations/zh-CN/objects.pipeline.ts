@@ -83,6 +83,11 @@ export const pipeline: Record<string, ObjectTranslationData> = {
       mobile: { label: '手机' },
       website: { label: '网站' },
       rating: { label: '线索评分', help: '线索质量评分（1-5 星）' },
+      approval_status: {
+        label: '审批状态',
+        help: '线索资格确认后进入审批，审批通过方可转化为商机。',
+        options: { not_required: '无需审批', pending: '审批中', approved: '已批准', rejected: '已驳回' },
+      },
       converted_account: { label: '转化客户' },
       converted_contact: { label: '转化联系人' },
       converted_opportunity: { label: '转化商机' },

@@ -34,7 +34,7 @@ type Flow = Automation.Flow;
  */
 export const OpportunityApprovalFlow: Flow = {
   name: 'opportunity_approval',
-  label: 'Large Deal Approval',
+  label: 'Opportunity Initiation Approval',
   description: 'Tiered approval for opportunities: manager review at $100K or more, director sign-off > $500K.',
   type: 'record_change',
   status: 'active',
@@ -264,7 +264,7 @@ export const OpportunityApprovalFlow: Flow = {
 export const OpportunityApprovalOnCreateFlow: Flow = {
   ...OpportunityApprovalFlow,
   name: 'opportunity_approval_on_create',
-  label: 'Large Deal Approval (on create)',
+  label: 'Opportunity Initiation Approval (on create)',
   description: 'Approval intake for opportunities created above the threshold (insert-time twin of opportunity_approval).',
   nodes: OpportunityApprovalFlow.nodes.map((n) =>
     n.id === 'start'

@@ -196,6 +196,22 @@ export const Lead = ObjectSchema.create({
       ]
     }),
 
+    // Process sheet step 7 (线索审批): a qualified lead is approved before it
+    // may convert. Stamped by `lead_approval`; `lead.hook.ts` refuses a
+    // conversion while it is anything but `approved`.
+    approval_status: Field.select({
+      label: 'Approval Status',
+      group: 'qualification',
+      readonly: true,
+      defaultValue: 'not_required',
+      options: [
+        { label: 'Not Required', value: 'not_required', default: true },
+        { label: 'Pending',      value: 'pending',      color: '#FFA500' },
+        { label: 'Approved',     value: 'approved',     color: '#00AA00' },
+        { label: 'Rejected',     value: 'rejected',     color: '#FF0000' },
+      ],
+    }),
+
     rating: Field.rating(5, {
       label: 'Lead Score',
       description: 'Lead quality score (1-5 stars)',

@@ -106,7 +106,7 @@ async function main() {
   // 2. people
   const users = await api.records('sys_user', 500);
   for (const member of ProjectDemoStaff) {
-    let user = users.find((u) => u.email === member.email);
+    let user: Json | undefined = users.find((u) => u.email === member.email);
     if (!user) {
       const res = await api.postOk('/api/v1/auth/admin/create-user', {
         name: member.name, email: member.email, password: member.password,
@@ -129,10 +129,12 @@ async function main() {
         console.log(`    ~ password reset to the demo value`);
       }
     }
-    const held = (await api.records('sys_user_position', 500)).filter((r) => r.user_id === user.id).map((r) => String(r.position));
+    if (!user?.id) throw new Error(`no user id for ${member.email}`);
+    const userId = String(user.id);
+    const held = (await api.records('sys_user_position', 500)).filter((r) => r.user_id === userId).map((r) => String(r.position));
     for (const position of member.positions) {
       if (held.includes(position)) { console.log(`    = ${position}`); continue; }
-      await api.postOk('/api/v1/data/sys_user_position', { user_id: user.id, position, ...(org ? { organization_id: org } : {}) });
+      await api.postOk('/api/v1/data/sys_user_position', { user_id: userId, position, ...(org ? { organization_id: org } : {}) });
       console.log(`    + ${position}`);
     }
   }

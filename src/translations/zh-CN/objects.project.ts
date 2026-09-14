@@ -128,7 +128,7 @@ export const project: Objects = {
       gross_margin: { label: '毛利率 (%)', help: '（合同额 − 实际总成本）÷ 合同额。' },
       security_level: { label: '信息安全类别', options: SECURITY_LEVEL },
       security_notes: { label: '安全备注说明' },
-      status: { label: '状态', options: { planning: '立项中', active: '执行中', on_hold: '已暂停', closed: '已结项' } },
+      status: { label: '状态', options: { planning: '立项中', submitted: '已提交审批', active: '执行中', on_hold: '已暂停', closed: '已结项' } },
       approval_status: { label: '审批状态', options: APPROVAL_STATUS },
       approved_date: { label: '批准时间' },
       description: { label: '项目说明' },

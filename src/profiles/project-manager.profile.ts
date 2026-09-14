@@ -26,6 +26,13 @@ export const ProjectManagerProfile = {
     crm_expense_claim:     { allowCreate: true,  allowRead: true, allowEdit: true,  allowDelete: true,  viewAllRecords: true, modifyAllRecords: true },
     crm_budget_adjustment: { allowCreate: true,  allowRead: true, allowEdit: true,  allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
     crm_opportunity_change_request: { allowCreate: false, allowRead: true, allowEdit: false, allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
+
+    // Platform objects the record page reads for every record: the activity
+    // timeline, comments and attachments. Without these the console's record
+    // page answers 403 on three side requests and never leaves its skeleton.
+    sys_activity:   { allowCreate: false, allowRead: true, allowEdit: false, allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
+    sys_comment:    { allowCreate: true,  allowRead: true, allowEdit: true,  allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
+    sys_attachment: { allowCreate: true,  allowRead: true, allowEdit: false, allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
   },
   fields: {
     // Commercial figures — masked. `readable: false` removes the value from

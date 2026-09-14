@@ -26,6 +26,13 @@ export const PmoDirectorProfile = {
     crm_expense_claim:     { allowCreate: true, allowRead: true, allowEdit: true, allowDelete: true, viewAllRecords: true, modifyAllRecords: true, allowTransfer: true, allowExport: true },
     crm_budget_adjustment: { allowCreate: true, allowRead: true, allowEdit: true, allowDelete: true, viewAllRecords: true, modifyAllRecords: true, allowTransfer: true, allowExport: true },
     crm_opportunity_change_request: { allowCreate: true, allowRead: true, allowEdit: true, allowDelete: true, viewAllRecords: true, modifyAllRecords: true, allowTransfer: true },
+
+    // Platform objects the record page reads for every record: the activity
+    // timeline, comments and attachments. Without these the console's record
+    // page answers 403 on three side requests and never leaves its skeleton.
+    sys_activity:   { allowCreate: false, allowRead: true, allowEdit: false, allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
+    sys_comment:    { allowCreate: true,  allowRead: true, allowEdit: true,  allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
+    sys_attachment: { allowCreate: true,  allowRead: true, allowEdit: false, allowDelete: false, viewAllRecords: true, modifyAllRecords: false },
   },
   fields: {
     'crm_delivery_project.contract_amount': { readable: true, editable: true },

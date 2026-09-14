@@ -35,6 +35,7 @@ import timesheetHook from '../objects/timesheet.hook';
 import expenseClaimHook from '../objects/expense_claim.hook';
 import budgetAdjustmentHook from '../objects/budget_adjustment.hook';
 import opportunityGateHook from '../objects/opportunity_gate.hook';
+import leadGateHook from '../objects/lead_gate.hook';
 import opportunityChangeRequestHook from '../objects/opportunity_change_request.hook';
 
 const entries: Array<Hook | Hook[]> = [
@@ -61,6 +62,7 @@ const entries: Array<Hook | Hook[]> = [
   expenseClaimHook,
   budgetAdjustmentHook,
   opportunityGateHook,
+  leadGateHook,
   opportunityChangeRequestHook,
 ];
 
