@@ -1,0 +1,622 @@
+// Copyright (c) 2025 ObjectStack. Licensed under the Apache-2.0 license.
+
+/**
+ * Project-domain seeds — the digital-tech company demo.
+ *
+ * The story: a carbon-black group's digital-technology subsidiary runs IT
+ * projects for the group's plants (internal customers, settled at an internal
+ * price) and for a few external companies. One bidding agent is seeded ONLY to
+ * demonstrate the step-1 rule — it cannot open an opportunity.
+ *
+ * Three delivery projects are staged for the second demo scene, one per cost
+ * status: on budget · warning (≥ 80 %) · OVER BUDGET AND COST-LOCKED. The
+ * money on each is small on purpose (hundreds of thousands, not millions): a
+ * timesheet row carries at most 400 hours, so a handful of rows reaches the
+ * target without a wall of seed data.
+ *
+ * Seed doctrine is in `./_shared.ts`. Everything a hook DERIVES — estimate
+ * totals, margins, budget baseline / total, actual costs, usage, cost status,
+ * timesheet rate and labor cost — is deliberately NOT authored here: hooks
+ * run over seed writes and own those columns. Users cannot be seeded, so the
+ * role lookups stay empty; the presenter fills them live (or `admin_rescue`
+ * decides an empty approver slate).
+ */
+import { defineSeed } from '@objectstack/spec/data';
+import { cel } from '@objectstack/spec';
+import { Account } from '../objects/account.object';
+import { Contact } from '../objects/contact.object';
+import { Opportunity } from '../objects/opportunity.object';
+import { PresalesProject } from '../objects/presales_project.object';
+import { DeliveryProject } from '../objects/delivery_project.object';
+import { Timesheet } from '../objects/timesheet.object';
+import { ExpenseClaim } from '../objects/expense_claim.object';
+import { BudgetAdjustment } from '../objects/budget_adjustment.object';
+
+// ─── Accounts ─────────────────────────────────────────────────────────
+// `social_credit_code` values are placeholders in the legal 18-character shape,
+// not real registrations.
+const CN = (city: string, street: string) => ({ street, city, state: '江西省', postalCode: '333000', country: 'CN' });
+
+export const dtAccounts = defineSeed(Account, {
+  mode: 'upsert',
+  externalId: 'name',
+  records: [
+    {
+      name: '黑猫炭黑集团总部',
+      short_name: '集团总部',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91360200000000001X',
+      annual_it_budget: 12000000,
+      payment_cycle: 'quarterly',
+      is_strategic_partner: true,
+      incumbent_vendor: '数科公司',
+      phone: '+86-798-8000-0001',
+      billing_address: CN('景德镇市', '昌江区陶瓷工业园区 1 号'),
+      tier: 'enterprise',
+      segment: 'stable',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(3)`,
+      description: '集团总部 —— 数科公司的第一个内部客户。销售管理 CRM 系统正在立项。',
+    },
+    {
+      name: '韩城黑猫炭黑有限责任公司',
+      short_name: '韩城黑猫',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91610500000000002X',
+      annual_it_budget: 3500000,
+      payment_cycle: 'milestone',
+      phone: '+86-913-5000-0002',
+      billing_address: { street: '龙门镇工业园区', city: '韩城市', state: '陕西省', postalCode: '715400', country: 'CN' },
+      tier: 'enterprise',
+      segment: 'growth',
+      health_score: 'at_risk',
+      last_activity_date: cel`daysAgo(1)`,
+      description: 'MES 生产执行系统交付中 —— 项目已超预算并锁定工时，正在申请追加预算。',
+    },
+    {
+      name: '乌海黑猫炭黑有限责任公司',
+      short_name: '乌海黑猫',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91150300000000003X',
+      annual_it_budget: 2800000,
+      payment_cycle: 'milestone',
+      phone: '+86-473-3000-0003',
+      billing_address: { street: '乌达工业园区', city: '乌海市', state: '内蒙古自治区', postalCode: '016000', country: 'CN' },
+      tier: 'mid_market',
+      segment: 'growth',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(6)`,
+      description: '能源管理平台交付中，预算执行率已过 80%。',
+    },
+    {
+      name: '邯郸黑猫炭黑有限责任公司',
+      short_name: '邯郸黑猫',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91130400000000004X',
+      annual_it_budget: 2200000,
+      payment_cycle: 'quarterly',
+      phone: '+86-310-6000-0004',
+      billing_address: { street: '峰峰矿区工业园', city: '邯郸市', state: '河北省', postalCode: '056000', country: 'CN' },
+      tier: 'mid_market',
+      segment: 'growth',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(12)`,
+      description: '安全生产监控平台售前立项草稿中。',
+    },
+    {
+      name: '唐山黑猫炭黑有限责任公司',
+      short_name: '唐山黑猫',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91130200000000005X',
+      annual_it_budget: 2600000,
+      payment_cycle: 'milestone',
+      phone: '+86-315-7000-0005',
+      billing_address: { street: '曹妃甸工业区', city: '唐山市', state: '河北省', postalCode: '063000', country: 'CN' },
+      tier: 'mid_market',
+      segment: 'growth',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(4)`,
+      description: '数据中台售前立项已批准，待转交付。',
+    },
+    {
+      name: '济宁黑猫炭黑有限责任公司',
+      short_name: '济宁黑猫',
+      type: 'customer',
+      customer_category: 'internal',
+      industry: 'manufacturing',
+      social_credit_code: '91370800000000006X',
+      annual_it_budget: 1800000,
+      payment_cycle: 'quarterly',
+      phone: '+86-537-2000-0006',
+      billing_address: { street: '嘉祥县化工园区', city: '济宁市', state: '山东省', postalCode: '272000', country: 'CN' },
+      tier: 'mid_market',
+      segment: 'stable',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(9)`,
+      description: '基础设施上云项目执行中，成本正常。',
+    },
+    {
+      name: '景德镇陶瓷集团有限公司',
+      short_name: '陶瓷集团',
+      type: 'prospect',
+      customer_category: 'regular',
+      industry: 'manufacturing',
+      social_credit_code: '91360200000000007X',
+      annual_it_budget: 5000000,
+      payment_cycle: 'on_acceptance',
+      incumbent_vendor: '某省级系统集成商',
+      phone: '+86-798-8000-0007',
+      billing_address: CN('景德镇市', '珠山区陶瓷大道 88 号'),
+      tier: 'enterprise',
+      segment: 'net_new',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(2)`,
+      description: '外部客户 —— 智慧园区项目投标中，数科公司对外输出的第一个标杆。',
+    },
+    {
+      name: '江西赣锋新能源材料有限公司',
+      short_name: '赣锋新材',
+      type: 'prospect',
+      customer_category: 'regular',
+      industry: 'energy',
+      social_credit_code: '91360100000000008X',
+      annual_it_budget: 3000000,
+      payment_cycle: 'milestone',
+      ear_controlled: true,
+      phone: '+86-791-8000-0008',
+      billing_address: { street: '高新区艾溪湖三路', city: '南昌市', state: '江西省', postalCode: '330000', country: 'CN' },
+      tier: 'mid_market',
+      segment: 'growth',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(20)`,
+      description: '外部客户，出口业务涉及 EAR 管制标识。',
+    },
+    {
+      name: '景德镇建设工程招标代理有限公司',
+      short_name: '建设招标代理',
+      type: 'partner',
+      customer_category: 'bidding_agent',
+      industry: 'other',
+      social_credit_code: '91360200000000009X',
+      phone: '+86-798-8000-0009',
+      billing_address: CN('景德镇市', '昌江区新厂西路 12 号'),
+      tier: 'smb',
+      segment: 'net_new',
+      health_score: 'healthy',
+      last_activity_date: cel`daysAgo(30)`,
+      description: '招标代理 —— 仅用于付款回款。在此客户上新建商机会被系统拒绝（需求表步骤 1 备注）。',
+    },
+  ],
+});
+
+// ─── Contacts ─────────────────────────────────────────────────────────
+export const dtContacts = defineSeed(Contact, {
+  mode: 'upsert',
+  externalId: 'email',
+  records: [
+    { salutation: 'mr', first_name: '建国', last_name: '王', email: 'wang.jianguo@heimao.example.com', phone: '+86-138-0000-0001', title: '信息化部部长', crm_account: '黑猫炭黑集团总部', is_primary: true },
+    { salutation: 'ms', first_name: '芳', last_name: '李', email: 'li.fang@heimao.example.com', phone: '+86-138-0000-0002', title: '销售管理部经理', crm_account: '黑猫炭黑集团总部' },
+    { salutation: 'mr', first_name: '强', last_name: '张', email: 'zhang.qiang@hancheng.example.com', phone: '+86-138-0000-0003', title: '生产副总', crm_account: '韩城黑猫炭黑有限责任公司', is_primary: true },
+    { salutation: 'mr', first_name: '伟', last_name: '刘', email: 'liu.wei@hancheng.example.com', phone: '+86-138-0000-0004', title: '设备与自动化主管', crm_account: '韩城黑猫炭黑有限责任公司' },
+    { salutation: 'ms', first_name: '敏', last_name: '陈', email: 'chen.min@wuhai.example.com', phone: '+86-138-0000-0005', title: '能源管理部主任', crm_account: '乌海黑猫炭黑有限责任公司', is_primary: true },
+    { salutation: 'mr', first_name: '磊', last_name: '杨', email: 'yang.lei@handan.example.com', phone: '+86-138-0000-0006', title: '安全总监', crm_account: '邯郸黑猫炭黑有限责任公司', is_primary: true },
+    { salutation: 'mr', first_name: '洋', last_name: '赵', email: 'zhao.yang@tangshan.example.com', phone: '+86-138-0000-0007', title: '总经理助理', crm_account: '唐山黑猫炭黑有限责任公司', is_primary: true },
+    { salutation: 'ms', first_name: '静', last_name: '周', email: 'zhou.jing@jining.example.com', phone: '+86-138-0000-0008', title: 'IT 主管', crm_account: '济宁黑猫炭黑有限责任公司', is_primary: true },
+    { salutation: 'mr', first_name: '国华', last_name: '吴', email: 'wu.guohua@taoci.example.com', phone: '+86-138-0000-0009', title: '信息中心主任', crm_account: '景德镇陶瓷集团有限公司', is_primary: true },
+    { salutation: 'ms', first_name: '雪', last_name: '孙', email: 'sun.xue@ganfeng.example.com', phone: '+86-138-0000-0010', title: '采购经理', crm_account: '江西赣锋新能源材料有限公司', is_primary: true },
+  ],
+});
+
+// ─── Opportunities ────────────────────────────────────────────────────
+// `probability` / `forecast_category` / `expected_revenue` MUST equal what
+// `opportunity.hook.ts` derives from `stage` (STAGE_PROBABILITY / STAGE_FORECAST).
+const stageOf = {
+  prospecting:    { stage: 'prospecting',    probability: 10,  forecast_category: 'pipeline' },
+  qualification:  { stage: 'qualification',  probability: 25,  forecast_category: 'pipeline' },
+  needs_analysis: { stage: 'needs_analysis', probability: 40,  forecast_category: 'best_case' },
+  proposal:       { stage: 'proposal',       probability: 60,  forecast_category: 'commit' },
+  negotiation:    { stage: 'negotiation',    probability: 80,  forecast_category: 'commit' },
+  closed_won:     { stage: 'closed_won',     probability: 100, forecast_category: 'closed' },
+} as const;
+const amountAt = (amount: number, probability: number) => ({ amount, expected_revenue: Math.round(amount * probability) / 100 });
+
+export const dtOpportunities = defineSeed(Opportunity, {
+  mode: 'upsert',
+  externalId: 'name',
+  records: [
+    {
+      name: '集团销售管理 CRM 系统',
+      crm_account: '黑猫炭黑集团总部',
+      primary_contact: 'li.fang@heimao.example.com',
+      ...stageOf.proposal, ...amountAt(900000, 60),
+      close_date: cel`daysFromNow(45)`,
+      stage_entry_date: cel`daysAgo(8)`,
+      type: 'new_business',
+      lead_source: 'referral',
+      is_bid: false,
+      opportunity_level: 'level_a',
+      priority: 'high',
+      controllability: 'high',
+      signing_entity: 'dt_main',
+      business_category: 'crm',
+      project_name: '集团销售管理 CRM 系统一期',
+      revenue_type: 'internal_settlement',
+      expected_sign_date: cel`daysFromNow(40)`,
+      customer_approval_date: cel`daysAgo(20)`,
+      description: '集团各子公司炭黑销售统一到一套 CRM：客户、合同、月度价格、发货回款。数科先用项管平台跑自己，用好了推给子公司。',
+      next_step: '演示第一幕：在本商机上点「生成售前立项」。',
+    },
+    {
+      name: '韩城黑猫 MES 生产执行系统',
+      crm_account: '韩城黑猫炭黑有限责任公司',
+      primary_contact: 'zhang.qiang@hancheng.example.com',
+      ...stageOf.closed_won, ...amountAt(700000, 100),
+      close_date: cel`daysAgo(120)`,
+      stage_entry_date: cel`daysAgo(120)`,
+      type: 'new_business',
+      lead_source: 'partner',
+      win_reason: 'best_fit',
+      is_bid: false,
+      opportunity_level: 'level_a',
+      priority: 'high',
+      controllability: 'high',
+      signing_entity: 'dt_main',
+      business_category: 'mes',
+      project_name: '韩城黑猫 MES 生产执行系统',
+      revenue_type: 'internal_settlement',
+      description: '炭黑生产线 MES：配方、批次、质量追溯。已赢单并转入交付。',
+    },
+    {
+      name: '乌海黑猫能源管理平台',
+      crm_account: '乌海黑猫炭黑有限责任公司',
+      primary_contact: 'chen.min@wuhai.example.com',
+      ...stageOf.closed_won, ...amountAt(450000, 100),
+      close_date: cel`daysAgo(90)`,
+      stage_entry_date: cel`daysAgo(90)`,
+      type: 'new_business',
+      lead_source: 'referral',
+      win_reason: 'relationship',
+      is_bid: false,
+      opportunity_level: 'level_b',
+      priority: 'medium',
+      controllability: 'high',
+      signing_entity: 'dt_main',
+      business_category: 'energy',
+      project_name: '乌海黑猫能源管理平台',
+      revenue_type: 'internal_settlement',
+      description: '尾气余热发电与用能监控平台。已赢单并转入交付。',
+    },
+    {
+      name: '济宁黑猫基础设施上云',
+      crm_account: '济宁黑猫炭黑有限责任公司',
+      primary_contact: 'zhou.jing@jining.example.com',
+      ...stageOf.closed_won, ...amountAt(650000, 100),
+      close_date: cel`daysAgo(150)`,
+      stage_entry_date: cel`daysAgo(150)`,
+      type: 'new_business',
+      lead_source: 'cold_call',
+      win_reason: 'better_price',
+      is_bid: false,
+      opportunity_level: 'level_b',
+      priority: 'medium',
+      controllability: 'medium',
+      signing_entity: 'dt_main',
+      business_category: 'infra',
+      project_name: '济宁黑猫基础设施上云',
+      revenue_type: 'internal_settlement',
+      description: '机房整合与私有云迁移。已赢单并转入交付，成本正常。',
+    },
+    {
+      name: '唐山黑猫数据中台',
+      crm_account: '唐山黑猫炭黑有限责任公司',
+      primary_contact: 'zhao.yang@tangshan.example.com',
+      ...stageOf.negotiation, ...amountAt(1200000, 80),
+      close_date: cel`daysFromNow(20)`,
+      stage_entry_date: cel`daysAgo(5)`,
+      type: 'new_business',
+      lead_source: 'event',
+      is_bid: false,
+      opportunity_level: 'level_a',
+      priority: 'high',
+      controllability: 'medium',
+      signing_entity: 'dt_main',
+      business_category: 'data',
+      project_name: '唐山黑猫数据中台',
+      revenue_type: 'fixed_price',
+      expected_sign_date: cel`daysFromNow(20)`,
+      customer_approval_date: cel`daysAgo(30)`,
+      description: '生产、能源、质量数据统一入湖，经营驾驶舱。售前立项已批准，待转交付。',
+    },
+    {
+      name: '邯郸黑猫安全生产监控平台',
+      crm_account: '邯郸黑猫炭黑有限责任公司',
+      primary_contact: 'yang.lei@handan.example.com',
+      ...stageOf.needs_analysis, ...amountAt(380000, 40),
+      close_date: cel`daysFromNow(75)`,
+      stage_entry_date: cel`daysAgo(14)`,
+      type: 'new_business',
+      lead_source: 'web',
+      is_bid: false,
+      opportunity_level: 'level_c',
+      priority: 'medium',
+      controllability: 'medium',
+      signing_entity: 'dt_main',
+      business_category: 'security',
+      project_name: '邯郸黑猫安全生产监控平台',
+      revenue_type: 'internal_settlement',
+      description: '重大危险源在线监测与双重预防机制平台。售前立项草稿中。',
+    },
+    {
+      name: '景德镇陶瓷集团智慧园区',
+      crm_account: '景德镇陶瓷集团有限公司',
+      primary_contact: 'wu.guohua@taoci.example.com',
+      ...stageOf.qualification, ...amountAt(2600000, 25),
+      close_date: cel`daysFromNow(120)`,
+      stage_entry_date: cel`daysAgo(10)`,
+      type: 'new_business',
+      lead_source: 'event',
+      is_bid: true,
+      opportunity_level: 'level_a',
+      priority: 'high',
+      controllability: 'low',
+      signing_entity: 'dt_main',
+      business_category: 'infra',
+      project_name: '陶瓷集团智慧园区一期',
+      revenue_type: 'fixed_price',
+      expected_sign_date: cel`daysFromNow(110)`,
+      description: '外部客户，公开招标。数科对外输出的第一个标杆项目。',
+      next_step: '编制投标文件；招标代理为「景德镇建设工程招标代理有限公司」。',
+    },
+  ],
+});
+
+// ─── Presales projects ────────────────────────────────────────────────
+// Derived: est_total_cost, gross_margin (presales_project.hook.ts).
+export const presalesProjects = defineSeed(PresalesProject, {
+  mode: 'upsert',
+  externalId: 'name',
+  records: [
+    {
+      name: '韩城黑猫 MES 生产执行系统',
+      alias: 'HC-MES',
+      crm_opportunity: '韩城黑猫 MES 生产执行系统',
+      crm_account: '韩城黑猫炭黑有限责任公司',
+      project_type: 'implementation',
+      business_category: 'mes',
+      plan_start_date: cel`daysAgo(110)`,
+      plan_end_date: cel`daysFromNow(70)`,
+      expected_contract_amount: 700000,
+      est_labor_cost: 300000, est_service_cost: 50000, est_hardware_cost: 150000, est_expense_cost: 20000,
+      quote_amount: 700000,
+      security_level: 'confidential',
+      status: 'converted',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(112)`,
+      description: 'Bizcase 评审通过。',
+    },
+    {
+      name: '乌海黑猫能源管理平台',
+      alias: 'WH-EMS',
+      crm_opportunity: '乌海黑猫能源管理平台',
+      crm_account: '乌海黑猫炭黑有限责任公司',
+      project_type: 'implementation',
+      business_category: 'energy',
+      plan_start_date: cel`daysAgo(80)`,
+      plan_end_date: cel`daysFromNow(40)`,
+      expected_contract_amount: 450000,
+      est_labor_cost: 200000, est_service_cost: 30000, est_hardware_cost: 100000, est_expense_cost: 10000,
+      quote_amount: 450000,
+      security_level: 'internal',
+      status: 'converted',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(82)`,
+    },
+    {
+      name: '济宁黑猫基础设施上云',
+      alias: 'JN-CLOUD',
+      crm_opportunity: '济宁黑猫基础设施上云',
+      crm_account: '济宁黑猫炭黑有限责任公司',
+      project_type: 'integration',
+      business_category: 'infra',
+      plan_start_date: cel`daysAgo(140)`,
+      plan_end_date: cel`daysFromNow(30)`,
+      expected_contract_amount: 650000,
+      est_labor_cost: 150000, est_service_cost: 20000, est_hardware_cost: 300000, est_expense_cost: 10000,
+      quote_amount: 650000,
+      security_level: 'internal',
+      status: 'converted',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(142)`,
+    },
+    {
+      name: '唐山黑猫数据中台',
+      alias: 'TS-DATA',
+      crm_opportunity: '唐山黑猫数据中台',
+      crm_account: '唐山黑猫炭黑有限责任公司',
+      project_type: 'development',
+      business_category: 'data',
+      plan_start_date: cel`daysFromNow(15)`,
+      plan_end_date: cel`daysFromNow(200)`,
+      expected_contract_amount: 1200000,
+      est_labor_cost: 600000, est_service_cost: 80000, est_hardware_cost: 150000, est_expense_cost: 40000,
+      quote_amount: 1200000,
+      security_level: 'confidential',
+      status: 'approved',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(2)`,
+      description: '售前立项已批准 —— 演示「转交付立项」用这一条。',
+      risk_analysis: '数据源多、口径不一致；客户侧数据治理成熟度低。',
+    },
+    {
+      name: '邯郸黑猫安全生产监控平台',
+      alias: 'HD-SAFE',
+      crm_opportunity: '邯郸黑猫安全生产监控平台',
+      crm_account: '邯郸黑猫炭黑有限责任公司',
+      project_type: 'implementation',
+      business_category: 'security',
+      plan_start_date: cel`daysFromNow(60)`,
+      plan_end_date: cel`daysFromNow(240)`,
+      expected_contract_amount: 380000,
+      est_labor_cost: 180000, est_service_cost: 20000, est_hardware_cost: 90000, est_expense_cost: 15000,
+      quote_amount: 380000,
+      security_level: 'secret',
+      status: 'draft',
+      description: '草稿 —— 演示「提交审批 → 项目总监审批」用这一条。',
+    },
+  ],
+});
+
+// ─── Delivery projects ────────────────────────────────────────────────
+// Derived: budget_baseline / budget_total / actual_* / budget_used_pct /
+// cost_status / gross_margin (delivery_project.hook.ts + child rollups).
+// Targets after the timesheet and expense seeds below land:
+//   济宁 on budget   480,000 budget · ~101,000 actual · ~21 %
+//   乌海 warning     340,000 budget · ~280,000 actual · ~82 %
+//   韩城 OVER + lock 520,000 budget · ~540,000 actual · ~104 %  ← scene two
+export const deliveryProjects = defineSeed(DeliveryProject, {
+  mode: 'upsert',
+  externalId: 'name',
+  records: [
+    {
+      name: '济宁黑猫基础设施上云',
+      alias: 'JN-CLOUD',
+      crm_presales_project: '济宁黑猫基础设施上云',
+      crm_opportunity: '济宁黑猫基础设施上云',
+      crm_account: '济宁黑猫炭黑有限责任公司',
+      project_type: 'integration',
+      business_category: 'infra',
+      plan_start_date: cel`daysAgo(140)`,
+      plan_end_date: cel`daysFromNow(30)`,
+      actual_start_date: cel`daysAgo(135)`,
+      cost_center: 'infra',
+      accounting_cost_center: 'delivery_1',
+      budget_labor: 150000, budget_service: 20000, budget_hardware: 300000, budget_expense: 10000,
+      contract_amount: 650000,
+      cost_control: 'warn',
+      security_level: 'internal',
+      status: 'active',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(138)`,
+    },
+    {
+      name: '乌海黑猫能源管理平台',
+      alias: 'WH-EMS',
+      crm_presales_project: '乌海黑猫能源管理平台',
+      crm_opportunity: '乌海黑猫能源管理平台',
+      crm_account: '乌海黑猫炭黑有限责任公司',
+      project_type: 'implementation',
+      business_category: 'energy',
+      plan_start_date: cel`daysAgo(80)`,
+      plan_end_date: cel`daysFromNow(40)`,
+      actual_start_date: cel`daysAgo(78)`,
+      cost_center: 'delivery_2',
+      accounting_cost_center: 'delivery_2',
+      budget_labor: 200000, budget_service: 30000, budget_hardware: 100000, budget_expense: 10000,
+      contract_amount: 450000,
+      cost_control: 'warn',
+      security_level: 'internal',
+      status: 'active',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(79)`,
+    },
+    {
+      name: '韩城黑猫 MES 生产执行系统',
+      alias: 'HC-MES',
+      crm_presales_project: '韩城黑猫 MES 生产执行系统',
+      crm_opportunity: '韩城黑猫 MES 生产执行系统',
+      crm_account: '韩城黑猫炭黑有限责任公司',
+      project_type: 'implementation',
+      business_category: 'mes',
+      plan_start_date: cel`daysAgo(110)`,
+      plan_end_date: cel`daysFromNow(70)`,
+      actual_start_date: cel`daysAgo(105)`,
+      cost_center: 'delivery_1',
+      accounting_cost_center: 'data_ai',
+      budget_labor: 300000, budget_service: 50000, budget_hardware: 150000, budget_expense: 20000,
+      contract_amount: 700000,
+      // Set by the cost administrator: over budget ⇒ timesheets refused.
+      cost_control: 'block',
+      security_level: 'confidential',
+      status: 'active',
+      approval_status: 'approved',
+      approved_date: cel`daysAgo(108)`,
+      description: '需求蔓延：客户追加了质量追溯与设备联网两个模块，成本已超 Bizcase 基线。成本管理员已将成本管控模式置为「超支锁定工时」。',
+    },
+  ],
+});
+
+// ─── Timesheets ───────────────────────────────────────────────────────
+// hourly_rate / labor_cost are derived from position_level × hours by
+// timesheet.hook.ts (sample rates: junior 100 · intermediate 150 · senior 220 ·
+// expert 320 · architect 450 per hour). Only submitted / approved rows count.
+const ts = (project: string, month: string, level: string, hours: number, status: string, who: string) => ({
+  crm_delivery_project: project,
+  period_month: month,
+  position_level: level,
+  hours,
+  status,
+  work_description: `${who} · ${project} · ${month.slice(0, 7)}`,
+});
+
+export const timesheets = defineSeed(Timesheet, {
+  mode: 'upsert',
+  externalId: 'work_description',
+  records: [
+    // 济宁 — 89,000 labor
+    ts('济宁黑猫基础设施上云', '2026-06-01', 'senior', 200, 'approved', '云平台架构'),
+    ts('济宁黑猫基础设施上云', '2026-07-01', 'intermediate', 300, 'approved', '迁移实施'),
+    ts('济宁黑猫基础设施上云', '2026-08-01', 'intermediate', 60, 'submitted', '割接支持'),
+    // 乌海 — 250,000 labor
+    ts('乌海黑猫能源管理平台', '2026-06-01', 'expert', 400, 'approved', '能源模型设计'),
+    ts('乌海黑猫能源管理平台', '2026-07-01', 'senior', 400, 'approved', '采集与联网实施'),
+    ts('乌海黑猫能源管理平台', '2026-08-01', 'intermediate', 227, 'approved', '看板开发'),
+    ts('乌海黑猫能源管理平台', '2026-09-01', 'intermediate', 80, 'draft', '试运行支持'),
+    // 韩城 — 479,600 labor (over the 300,000 labor line and the 520,000 total)
+    ts('韩城黑猫 MES 生产执行系统', '2026-06-01', 'architect', 400, 'approved', 'MES 总体架构'),
+    ts('韩城黑猫 MES 生产执行系统', '2026-07-01', 'expert', 400, 'approved', '配方与批次'),
+    ts('韩城黑猫 MES 生产执行系统', '2026-08-01', 'senior', 400, 'approved', '质量追溯（追加模块）'),
+    ts('韩城黑猫 MES 生产执行系统', '2026-09-01', 'senior', 380, 'approved', '设备联网（追加模块）'),
+  ],
+});
+
+// ─── Expense claims ───────────────────────────────────────────────────
+export const expenseClaims = defineSeed(ExpenseClaim, {
+  mode: 'upsert',
+  externalId: 'description',
+  records: [
+    { crm_delivery_project: '济宁黑猫基础设施上云', expense_date: cel`daysAgo(60)`, category: 'transport', amount: 6200, status: 'approved', description: '济宁现场割接 · 机票与高铁' },
+    { crm_delivery_project: '济宁黑猫基础设施上云', expense_date: cel`daysAgo(58)`, category: 'hotel', amount: 5800, status: 'approved', description: '济宁现场割接 · 住宿 12 晚' },
+    { crm_delivery_project: '乌海黑猫能源管理平台', expense_date: cel`daysAgo(40)`, category: 'transport', amount: 14000, status: 'approved', description: '乌海驻场 · 往返交通 4 人' },
+    { crm_delivery_project: '乌海黑猫能源管理平台', expense_date: cel`daysAgo(30)`, category: 'hotel', amount: 16000, status: 'approved', description: '乌海驻场 · 住宿 40 晚' },
+    { crm_delivery_project: '韩城黑猫 MES 生产执行系统', expense_date: cel`daysAgo(50)`, category: 'transport', amount: 22000, status: 'approved', description: '韩城驻场 · 往返交通 6 人' },
+    { crm_delivery_project: '韩城黑猫 MES 生产执行系统', expense_date: cel`daysAgo(20)`, category: 'hotel', amount: 38000, status: 'approved', description: '韩城驻场 · 住宿 95 晚' },
+  ],
+});
+
+// ─── Budget adjustments ───────────────────────────────────────────────
+// One DRAFT on the locked project: the presenter submits it live, approves
+// it in the inbox, and the timesheet that was refused goes through.
+export const budgetAdjustments = defineSeed(BudgetAdjustment, {
+  mode: 'upsert',
+  externalId: 'reason',
+  records: [
+    {
+      crm_delivery_project: '韩城黑猫 MES 生产执行系统',
+      cost_category: 'labor',
+      amount: 120000,
+      status: 'draft',
+      reason: '客户追加质量追溯与设备联网两个模块，人工投入超出 Bizcase 基线',
+      variance_analysis: '基线人工 30 万，实际已投入 48 万；追加模块约 45 人天（高级），预计再需 12 万。合同额已按变更单相应调增。',
+    },
+  ],
+});

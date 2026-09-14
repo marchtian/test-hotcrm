@@ -33,6 +33,10 @@ import {
 } from './service.seed';
 import { campaigns, campaignMembersFromLeads, campaignMembersFromContacts } from './marketing.seed';
 import { contracts, quotes, quoteLineItems, forecasts } from './revenue.seed';
+import {
+  dtAccounts, dtContacts, dtOpportunities,
+  presalesProjects, deliveryProjects, timesheets, expenseClaims, budgetAdjustments,
+} from './project.seed';
 
 /**
  * Ownership and CRM positions are NOT seeded here — they can't be.
@@ -85,6 +89,17 @@ export const CrmSeedData = [
   quoteLineItems,
   forecasts,
   knowledgeArticles,
+  // Project domain (digital-tech company demo) — after the CRM families, in
+  // lookup order: accounts → contacts → opportunities → presales → delivery →
+  // the three cost-execution objects that roll up into delivery projects.
+  dtAccounts,
+  dtContacts,
+  dtOpportunities,
+  presalesProjects,
+  deliveryProjects,
+  timesheets,
+  expenseClaims,
+  budgetAdjustments,
 ];
 
 // ─────────────────────────────────────── the SaaS / multi-org composition ──
