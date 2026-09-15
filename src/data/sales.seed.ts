@@ -159,6 +159,9 @@ export const accounts = defineSeed(Account, {
   records: [
     {
       name: 'Acme Corporation',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'technology',
       annual_revenue: 5000000,
@@ -215,6 +218,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Globex Industries',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'manufacturing',
       annual_revenue: 12000000,
@@ -230,6 +236,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Initech Solutions',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'finance',
       annual_revenue: 3500000,
@@ -248,6 +257,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Stark Medical',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'partner',
       industry: 'healthcare',
       annual_revenue: 8000000,
@@ -281,6 +293,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Wayne Enterprises',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'technology',
       annual_revenue: 25000000,
@@ -309,6 +324,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Northwind Energy',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'energy',
       annual_revenue: 18000000,
@@ -327,6 +345,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Vertex Analytics',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'software',
       annual_revenue: 9500000,
@@ -343,6 +364,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Lattice Education',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'customer',
       industry: 'education',
       annual_revenue: 6800000,
@@ -365,6 +389,9 @@ three regional teams (NA, EMEA, APAC).
     },
     {
       name: 'Apex Logistics',
+      // Reviewed and active (process sheet step 5) — the review gate reads a
+      // draft as not yet able to carry an opportunity.
+      account_status: 'active',
       type: 'prospect',
       industry: 'logistics',
       annual_revenue: 22000000,
@@ -810,6 +837,10 @@ export const opportunities = defineSeed(Opportunity, {
       crm_account: 'Acme Corporation',
       ...dealValue('Acme Platform Upgrade', 60),
       stage: 'proposal',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 60,
       close_date: cel`daysFromNow(30)`,
       type: 'existing_upgrade',
@@ -838,6 +869,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       crm_account: 'Globex Industries',
       ...dealValue('Globex Manufacturing Suite', 25),
       stage: 'qualification',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 25,
       close_date: cel`daysFromNow(60)`,
       type: 'new_business',
@@ -850,6 +885,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       crm_account: 'Wayne Enterprises',
       ...dealValue('Wayne Enterprise License', 80),
       stage: 'negotiation',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 80,
       close_date: cel`daysFromNow(14)`,
       type: 'new_business',
@@ -862,6 +901,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       crm_account: 'Initech Solutions',
       ...dealValue('Initech Cloud Migration', 40),
       stage: 'needs_analysis',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 40,
       close_date: cel`daysFromNow(45)`,
       type: 'existing_upgrade',
@@ -1101,6 +1144,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       primary_contact: 'olivia.chen@northwind.example.com',
       ...dealValue('Northwind Grid Modernization', 10),
       stage: 'prospecting',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 10,
       close_date: cel`daysFromNow(72)`,
       type: 'new_business',
@@ -1117,6 +1164,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       crm_campaign: 'Developer Content Marketing Push',
       ...dealValue('Lattice Student Success Platform', 10),
       stage: 'prospecting',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 10,
       close_date: cel`daysFromNow(96)`,
       type: 'new_business',
@@ -1132,6 +1183,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       primary_contact: 'ethan.brooks@vertex.example.com',
       ...dealValue('Vertex Analytics Expansion', 25),
       stage: 'qualification',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 25,
       close_date: cel`daysFromNow(52)`,
       type: 'existing_expansion',
@@ -1147,6 +1202,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       primary_contact: 'marcus.reed@apexlogistics.example.com',
       ...dealValue('Apex Logistics Data Hub', 40),
       stage: 'needs_analysis',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 40,
       close_date: cel`daysFromNow(38)`,
       type: 'new_business',
@@ -1163,6 +1222,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       crm_campaign: 'Q3 Enterprise Email Nurture',
       ...dealValue('Lattice Education Renewal', 60),
       stage: 'proposal',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 60,
       close_date: cel`daysFromNow(24)`,
       type: 'existing_renewal',
@@ -1178,6 +1241,10 @@ analytics seats for the Ops org, (3) priority support SLA.`,
       primary_contact: 'ethan.brooks@vertex.example.com',
       ...dealValue('Vertex Enterprise Rollout', 80),
       stage: 'negotiation',
+      // Step 11 gate (#11): open stock deals ship already through initiation
+      // approval so the pipeline kanban stays draggable out of the box.
+      approval_status: 'approved',
+      initiation_requested: true,
       probability: 80,
       close_date: cel`daysFromNow(11)`,
       type: 'existing_expansion',

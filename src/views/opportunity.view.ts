@@ -382,6 +382,36 @@ export const OpportunityViews = defineView({
         ],
       },
       {
+        // Process sheet steps 8–10 (跟单信息 / 主体信息 / 其他信息).
+        name: 'initiation_info',
+        label: 'Initiation Info',
+        columns: 2,
+        fields: [
+          'is_bid',
+          'opportunity_level',
+          'priority',
+          'controllability',
+          'signing_entity',
+          'business_category',
+          'project_name',
+          'revenue_type',
+          'customer_approval_date',
+          'expected_bid_date',
+          'expected_sign_date',
+          'subcontract_plan',
+          { field: 'payment_terms_notes', span: 'full' },
+          { field: 'subcontract_notes', span: 'full' },
+          { field: 'risk_analysis', span: 'full' },
+        ],
+      },
+      {
+        // Process sheet step 13 — the iron triangle.
+        name: 'iron_triangle_roles',
+        label: 'Iron Triangle',
+        columns: 3,
+        fields: ['account_manager', 'solution_manager', 'delivery_manager'],
+      },
+      {
         name: 'sales_strategy',
         label: 'Sales Strategy',
         columns: 1,

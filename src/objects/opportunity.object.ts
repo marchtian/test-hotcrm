@@ -3,6 +3,10 @@
 import { ObjectSchema, Field } from '@objectstack/spec/data';
 import { F, P } from '@objectstack/spec';
 import { LEAD_SOURCE_OPTIONS, OPPORTUNITY_STAGE_OPTIONS } from './_picklists';
+import {
+  BUSINESS_CATEGORY_OPTIONS, CONTROLLABILITY_OPTIONS, OPPORTUNITY_LEVEL_OPTIONS,
+  PRIORITY_OPTIONS, REVENUE_TYPE_OPTIONS, SIGNING_ENTITY_OPTIONS,
+} from './_project-picklists';
 
 export const Opportunity = ObjectSchema.create({
   name: 'crm_opportunity',
@@ -34,6 +38,10 @@ export const Opportunity = ObjectSchema.create({
     { key: 'campaign', label: 'Campaigns', icon: 'flag', collapse: 'collapsed' },
     { key: 'notes',       label: 'Notes & Next Steps',  icon: 'file-text' },
     { key: 'crm_forecast',    label: 'Forecast & Metrics',  icon: 'bar-chart', collapse: 'collapsed' },
+    // Process sheet steps 8–9 (商机跟单信息 / 主体信息) and the iron-triangle
+    // roles of step 13 — digital-tech company demo.
+    { key: 'initiation',  label: 'Initiation Info',     icon: 'clipboard-list' },
+    { key: 'iron_triangle', label: 'Iron Triangle',     icon: 'users' },
   ],
 
   fields: {
@@ -252,6 +260,48 @@ export const Opportunity = ObjectSchema.create({
     // ⚠️ `defaultValue` at FIELD level: option-level `default: true`
     // only preselects in UI forms — API and flow inserts land null without it,
     // and a null `approval_status` never matches the flow's entry condition.
+    // ─── Initiation info (process sheet steps 8–9) ─────────────────────
+    is_bid: Field.boolean({ label: 'Bidding Required', group: 'initiation', defaultValue: false }),
+    opportunity_level: Field.select({ label: 'Opportunity Level', group: 'initiation', options: [...OPPORTUNITY_LEVEL_OPTIONS] }),
+    priority: Field.select({ label: 'Priority', group: 'initiation', options: [...PRIORITY_OPTIONS] }),
+    controllability: Field.select({ label: 'Controllability', group: 'initiation', options: [...CONTROLLABILITY_OPTIONS] }),
+    signing_entity: Field.select({ label: 'Signing Entity', group: 'initiation', options: [...SIGNING_ENTITY_OPTIONS] }),
+    business_category: Field.select({ label: 'Business Category', group: 'initiation', options: [...BUSINESS_CATEGORY_OPTIONS] }),
+    project_name: Field.text({ label: 'Project Name', group: 'initiation', maxLength: 255 }),
+    revenue_type: Field.select({ label: 'Revenue Recognition', group: 'initiation', options: [...REVENUE_TYPE_OPTIONS] }),
+    customer_approval_date: Field.date({ label: 'Customer Project Approval Date', group: 'initiation' }),
+    expected_sign_date: Field.date({ label: 'Expected Signing Date', group: 'initiation' }),
+    expected_bid_date: Field.date({ label: 'Expected Bidding Date', group: 'initiation' }),
+    subcontract_plan: Field.select({
+      label: 'Subcontracting',
+      group: 'initiation',
+      options: [
+        { label: 'None', value: 'none', default: true },
+        { label: 'Partial', value: 'partial' },
+        { label: 'Full', value: 'full' },
+      ],
+    }),
+    payment_terms_notes: Field.textarea({ label: 'Payment Terms', group: 'initiation' }),
+    subcontract_notes: Field.textarea({ label: 'Subcontracting Notes', group: 'initiation' }),
+    risk_analysis: Field.textarea({ label: 'Risk Analysis', group: 'initiation' }),
+
+    // ─── Iron triangle (step 13) — copied onto the presales project ──────
+    account_manager: Field.lookup('sys_user', { label: 'Account Manager', group: 'iron_triangle' }),
+    solution_manager: Field.lookup('sys_user', { label: 'Solution Manager', group: 'iron_triangle' }),
+    delivery_manager: Field.lookup('sys_user', { label: 'Delivery Manager', group: 'iron_triangle' }),
+
+    // Process sheet step 11 — flipped by the `submit_opportunity_initiation`
+    // action; the `opportunity_approval` flow enters on it. Every submitted
+    // opportunity is reviewed regardless of amount (#8 / #11), and until
+    // `approval_status` is `approved` the initiation gate hook refuses stage
+    // and bid changes. Not readonly: the action's platform write must land it.
+    initiation_requested: Field.boolean({
+      label: 'Initiation Requested',
+      inlineHelpText: 'Set by Submit for Initiation Approval; the initiation approval flow enters on it.',
+      group: 'sales_process',
+      defaultValue: false,
+    }),
+
     approval_status: Field.select({
       label: 'Approval Status',
       group: 'sales_process',

@@ -312,15 +312,14 @@ describe('opportunity_approval — start condition', () => {
     expect(startConditionHolds(OpportunityApprovalFlow, pending)).toBe(false);
   });
 
-  describe('the large-deal line is inclusive (#1087)', () => {
-    // The governance half of the card's truth table, measured through the
-    // engine. The parity test reads the operator out of the shipped condition
-    // string; this asserts what that operator DOES, on both the update gate and
-    // its insert twin — a deal born at exactly $100,000 has to enter approval
-    // for the same reason one edited up to it does.
-    const openDeal = (amount: number): Record<string, unknown> => ({
-      record: { id: 'o1', amount, approval_status: 'not_required', stage: 'negotiation' },
-      previous: { id: 'o1', amount, approval_status: 'not_required', stage: 'negotiation' },
+  describe('the entry is the submit flag, not an amount (#11)', () => {
+    // Every submitted deal is reviewed regardless of amount: the rep's
+    // `submit_opportunity_initiation` action flips `initiation_requested`, and
+    // that — on both the update gate and its insert twin — is the whole entry.
+    // A deal that was never submitted stays out however large it is.
+    const openDeal = (over: Record<string, unknown>): Record<string, unknown> => ({
+      record: { id: 'o1', amount: 50_000, approval_status: 'not_required', stage: 'negotiation', initiation_requested: false, ...over },
+      previous: { id: 'o1', amount: 50_000, approval_status: 'not_required', stage: 'negotiation', initiation_requested: false },
     });
 
     const GATES = [
@@ -328,15 +327,21 @@ describe('opportunity_approval — start condition', () => {
       ['afterInsert twin', OpportunityApprovalOnCreateFlow],
     ] as const;
 
-    // No `$` in these titles: vitest reads `$name` in an `it.each` template as
-    // an object-property interpolation, so `$100,000` renders as
-    // "undefined,000" and the failure names an amount nobody wrote.
-    it.each(GATES)('%s routes a deal at EXACTLY 100,000 for approval', (_label, flow) => {
-      expect(startConditionHolds(flow as unknown as Rec, openDeal(100_000))).toBe(true);
+    it.each(GATES)('%s routes a submitted 50,000 deal for approval', (_label, flow) => {
+      expect(startConditionHolds(flow as unknown as Rec, openDeal({ initiation_requested: true }))).toBe(true);
     });
 
-    it.each(GATES)('%s leaves 99,999 alone', (_label, flow) => {
-      expect(startConditionHolds(flow as unknown as Rec, openDeal(99_999))).toBe(false);
+    it.each(GATES)('%s leaves an unsubmitted 750,000 deal alone', (_label, flow) => {
+      expect(startConditionHolds(flow as unknown as Rec, openDeal({ amount: 750_000 }))).toBe(false);
+    });
+
+    it.each(GATES)('%s lets a rejected deal back in once the submit action resets its status', (_label, flow) => {
+      expect(startConditionHolds(flow as unknown as Rec, openDeal({ initiation_requested: true, approval_status: 'rejected' }))).toBe(false);
+      expect(startConditionHolds(flow as unknown as Rec, openDeal({ initiation_requested: true, approval_status: 'not_required' }))).toBe(true);
+    });
+
+    it.each(GATES)('%s never re-enters a settled deal', (_label, flow) => {
+      expect(startConditionHolds(flow as unknown as Rec, openDeal({ initiation_requested: true, stage: 'closed_won' }))).toBe(false);
     });
   });
 });
@@ -497,11 +502,11 @@ describe('record-change flows under a user-less trigger (#684)', () => {
     // approval_status 'not_required' with no request ever opened.
     const deal = {
       id: 'o1', name: 'Acme Renewal', amount: 150_000, stage: 'negotiation',
-      approval_status: 'not_required', owner_id: 'rep1',
+      approval_status: 'not_required', owner_id: 'rep1', initiation_requested: true,
     };
     const { result } = await fire(
       'opportunity_approval', OpportunityApprovalFlow as unknown as Rec,
-      deal, { ...deal, amount: 50_000 }, { crm_opportunity: [{ ...deal }] },
+      deal, { ...deal, initiation_requested: false }, { crm_opportunity: [{ ...deal }] },
     );
     expect(String(result.error ?? ''), 'the deal is bypassing approval again').not.toContain('[runAs]');
     expect(nodeStatus(result, 'get_opportunity')).toBe('success');
@@ -516,11 +521,11 @@ describe('record-change flows under a user-less trigger (#684)', () => {
   it('…and never gets that far once runAs is dropped', async () => {
     const deal = {
       id: 'o1', name: 'Acme Renewal', amount: 150_000, stage: 'negotiation',
-      approval_status: 'not_required', owner_id: 'rep1',
+      approval_status: 'not_required', owner_id: 'rep1', initiation_requested: true,
     };
     const { result } = await fire(
       'opportunity_approval', withoutRunAs(OpportunityApprovalFlow as unknown as Rec),
-      deal, { ...deal, amount: 50_000 }, { crm_opportunity: [{ ...deal }] },
+      deal, { ...deal, initiation_requested: false }, { crm_opportunity: [{ ...deal }] },
     );
     expect(String(result.error)).toContain('[runAs] refusing a data operation');
     expect(nodeStatus(result, 'get_opportunity')).toBe('failure');

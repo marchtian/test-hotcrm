@@ -1,6 +1,7 @@
 // Copyright (c) 2025 ObjectStack. Licensed under the Apache-2.0 license.
 
 import { ObjectSchema, Field } from '@objectstack/spec/data';
+import { CUSTOMER_CATEGORY_OPTIONS, PAYMENT_CYCLE_OPTIONS } from './_project-picklists';
 import { F } from '@objectstack/spec';
 import { INDUSTRY_OPTIONS } from './_picklists';
 import { TERRITORY_OPTIONS } from './_territory';
@@ -32,6 +33,8 @@ export const Account = ObjectSchema.create({
     { key: 'financials',   label: 'Financials',         icon: 'dollar-sign' },
     { key: 'contact_info', label: 'Contact Information', icon: 'phone' },
     { key: 'ownership',    label: 'Ownership & Status', icon: 'users' },
+    // Process sheet step 3 (客户业务信息完善) — digital-tech company demo.
+    { key: 'business',     label: 'Business Profile',   icon: 'briefcase', collapse: 'collapsed' },
     { key: 'branding',     label: 'Branding',           icon: 'palette', collapse: 'collapsed' },
     { key: 'system',       label: 'System',             icon: 'settings', collapse: 'collapsed' },
   ],
@@ -176,6 +179,123 @@ export const Account = ObjectSchema.create({
         { label: 'Partner', value: 'partner', color: '#0000FF' },
         { label: 'Former Customer', value: 'former', color: '#999999' },
       ]
+    }),
+
+    // ─── Customer classification & business profile (process sheet 1, 3) ──
+    //
+    // `customer_category` carries a RULE, not just a label: `bidding_agent` and
+    // `other` may be paid and collected from but may not open an opportunity —
+    // enforced by `opportunity_gate.hook.ts` on insert. `internal` is a group
+    // subsidiary the digital-tech company serves at internal settlement price.
+    customer_category: Field.select({
+      label: 'Customer Category',
+      group: 'basic',
+      defaultValue: 'regular',
+      trackHistory: true,
+      options: [...CUSTOMER_CATEGORY_OPTIONS],
+    }),
+
+    // Process sheet step 5 (客户信息审批): a customer takes effect after review.
+    // ⚠️ Deliberately NO field-level `defaultValue`: only the option-level
+    // `default: true` below, which preselects "Draft" in the console's create
+    // form and nothing else. A seed or API insert that omits the field lands
+    // it ABSENT, and the opportunity gate reads absent as active — so the
+    // stock HotCRM seeds (nine accounts, twenty-odd deals on them) keep
+    // loading, while an account a person creates in the UI starts as a draft
+    // that must be submitted and reviewed before it can carry an opportunity.
+    account_status: Field.select({
+      label: 'Review Status',
+      group: 'basic',
+      trackHistory: true,
+      options: [
+        { label: 'Draft',      value: 'draft',     color: '#999999', default: true },
+        { label: 'Submitted',  value: 'submitted', color: '#FFA500' },
+        { label: 'Active',     value: 'active',    color: '#00AA00' },
+        { label: 'Rejected',   value: 'rejected',  color: '#FF0000' },
+      ],
+    }),
+
+    approval_status: Field.select({
+      label: 'Approval Status',
+      group: 'basic',
+      readonly: true,
+      defaultValue: 'not_required',
+      options: [
+        { label: 'Not Required', value: 'not_required', default: true },
+        { label: 'Pending',      value: 'pending',      color: '#FFA500' },
+        { label: 'Approved',     value: 'approved',     color: '#00AA00' },
+        { label: 'Rejected',     value: 'rejected',     color: '#FF0000' },
+      ],
+    }),
+
+    short_name: Field.text({
+      label: 'Short Name',
+      group: 'basic',
+      maxLength: 100,
+    }),
+
+    social_credit_code: Field.text({
+      label: 'Unified Social Credit Code',
+      group: 'basic',
+      maxLength: 18,
+    }),
+
+    // Process sheet step 1: 组织层级 and 注册信息 (beyond the credit code).
+    org_level: Field.select({
+      label: 'Organization Level',
+      group: 'basic',
+      options: [
+        { label: 'Group Headquarters', value: 'group_hq' },
+        { label: 'Subsidiary', value: 'subsidiary' },
+        { label: 'Branch', value: 'branch' },
+        { label: 'Independent Company', value: 'independent' },
+      ],
+    }),
+
+    legal_representative: Field.text({
+      label: 'Legal Representative',
+      group: 'business',
+      maxLength: 100,
+    }),
+
+    registered_capital: Field.currency({
+      label: 'Registered Capital',
+      group: 'business',
+      scale: 2,
+      min: 0,
+    }),
+
+    incumbent_vendor: Field.text({
+      label: 'Incumbent IT Vendor',
+      group: 'business',
+      maxLength: 255,
+    }),
+
+    annual_it_budget: Field.currency({
+      label: 'Annual IT Budget',
+      group: 'business',
+      scale: 2,
+      min: 0,
+    }),
+
+    payment_cycle: Field.select({
+      label: 'Payment Cycle',
+      group: 'business',
+      options: [...PAYMENT_CYCLE_OPTIONS],
+    }),
+
+    is_strategic_partner: Field.boolean({
+      label: 'Strategic Partner',
+      group: 'business',
+      defaultValue: false,
+    }),
+
+    // Export-control flag — a MARK for compliance review, not an enforcement
+    // (the customer's sheet asks for the flag only).
+    ear_controlled: Field.boolean({
+      label: 'US EAR Controlled',
+      group: 'business',
+      defaultValue: false,
     }),
 
     industry: Field.select({

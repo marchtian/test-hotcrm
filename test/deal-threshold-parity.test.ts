@@ -109,16 +109,10 @@ const amountCuts = (
  * file that quietly stops looking at one of the four is worse than none.
  */
 const LARGE_DEAL_SITES = [
-  {
-    label: 'approval entry gate (afterUpdate)',
-    scope: 'record',
-    source: () => conditionsOf('opportunity_approval')[0],
-  },
-  {
-    label: 'approval entry gate (afterInsert twin)',
-    scope: 'record',
-    source: () => conditionsOf('opportunity_approval_on_create')[0],
-  },
+  // The opportunity approval ENTRY was the fourth site until #11: every
+  // submitted deal is now reviewed regardless of amount, so its start
+  // condition no longer states a cut (asserted below), and only the
+  // director tier inside the flow still reads a threshold.
   {
     label: 'won-deal alert',
     scope: 'record',
@@ -206,6 +200,18 @@ describe('one definition of "large deal"', () => {
   });
 });
 
+describe('the approval entry reads no amount at all (#11)', () => {
+  it.each(['opportunity_approval', 'opportunity_approval_on_create'])(
+    '%s enters on the submit flag, not on an amount',
+    (name) => {
+      const source = conditionsOf(name)[0] ?? '';
+      expect(source, `${name} has no start condition`).not.toBe('');
+      expect(source).toContain('record.initiation_requested');
+      expect(amountCuts(source).filter((c) => c.scope === 'record')).toEqual([]);
+    },
+  );
+});
+
 describe('one definition of the director tier', () => {
   const directorCuts = () =>
     conditionsOf('opportunity_approval')
@@ -243,7 +249,7 @@ describe('one definition of the director tier', () => {
 describe('BOUNDARY: every large-deal site cuts inclusively at the line (#1087)', () => {
   /**
    * The ruling on #1087: a deal at exactly `LARGE_DEAL_AMOUNT` **is** a large
-   * deal, so all five sites cut at `>=`. Before it, governance (approval entry,
+   * deal, so every site cuts at `>=`. Before it, governance (approval entry,
    * its insert twin, the won alert) cut at `>` while visibility (both sharing
    * rules) cut at `>=`, and the $100,000.00 deal — plausibly the single
    * commonest amount in a CRM, because a round threshold attracts deals priced
@@ -284,15 +290,14 @@ describe('BOUNDARY: every large-deal site cuts inclusively at the line (#1087)',
     };
     const shared = (amount: number) =>
       cutAt('sharing: sales director')(amount) && cutAt('sharing: executive')(amount);
-    const governed = (amount: number) =>
-      cutAt('approval entry gate (afterUpdate)')(amount) &&
-      cutAt('approval entry gate (afterInsert twin)')(amount) &&
-      cutAt('won-deal alert')(amount);
+    // Governance is the won-deal alert alone since #11: approval entry no
+    // longer depends on the amount (every submitted deal is reviewed).
+    const governed = (amount: number) => cutAt('won-deal alert')(amount);
     const at = LARGE_DEAL_AMOUNT;
 
     // The row the card exists for: $100,000 is large for BOTH, or the fix did
     // not land. Accepted and intended consequence — a deal at exactly the
-    // threshold now requires manager approval and fires the won-deal alert.
+    // threshold fires the won-deal alert.
     expect({ amount: at, shared: shared(at), governed: governed(at) }).toEqual({
       amount: at, shared: true, governed: true,
     });

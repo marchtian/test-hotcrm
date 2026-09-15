@@ -10,3 +10,4 @@ export { LeadDataset } from './lead.dataset';
 export { TaskDataset } from './task.dataset';
 export { EventDataset } from './event.dataset';
 export { ForecastDataset } from './forecast.dataset';
+export { DeliveryProjectDataset } from './delivery_project.dataset';

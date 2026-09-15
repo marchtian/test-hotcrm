@@ -86,6 +86,51 @@ export const Contact = ObjectSchema.create({
     }),
 
     // Professional Information
+    // Process sheet step 2 (客户联系人信息维护): who this person is to the deal.
+    gender: Field.select({
+      label: 'Gender',
+      group: 'identity',
+      options: [
+        { label: 'Male', value: 'male' },
+        { label: 'Female', value: 'female' },
+        { label: 'Undisclosed', value: 'undisclosed' },
+      ],
+    }),
+
+    buying_function: Field.select({
+      label: 'Buying Function',
+      group: 'account_info',
+      options: [
+        { label: 'Decision Maker', value: 'decision_maker', color: '#B91C1C' },
+        { label: 'Economic Buyer', value: 'economic_buyer', color: '#D97706' },
+        { label: 'Technical Evaluator', value: 'technical_evaluator', color: '#4169E1' },
+        { label: 'End User', value: 'end_user' },
+        { label: 'Internal Champion', value: 'champion', color: '#15803D' },
+        { label: 'Procurement / Gatekeeper', value: 'gatekeeper' },
+      ],
+    }),
+
+    attitude: Field.select({
+      label: 'Attitude Toward Us',
+      group: 'account_info',
+      options: [
+        { label: 'Supportive', value: 'supportive', color: '#15803D' },
+        { label: 'Neutral', value: 'neutral', color: '#999999' },
+        { label: 'Opposed', value: 'opposed', color: '#B91C1C' },
+        { label: 'Unknown', value: 'unknown' },
+      ],
+    }),
+
+    relationship_strength: Field.select({
+      label: 'Relationship Strength',
+      group: 'account_info',
+      options: [
+        { label: 'Strong', value: 'strong', color: '#15803D' },
+        { label: 'Medium', value: 'medium', color: '#D97706' },
+        { label: 'Weak', value: 'weak', color: '#999999' },
+        { label: 'None', value: 'none' },
+      ],
+    }),
     title: Field.text({
       label: 'Job Title',
       group: 'account_info',

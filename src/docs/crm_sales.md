@@ -1,6 +1,6 @@
 ---
 title: Sales Process & Rules
-description: Lead routing, conversion, opportunity stages, large-deal approvals, and quotes — including every automated rule and threshold.
+description: Lead routing, conversion, opportunity stages, initiation approvals, and quotes — including every automated rule and threshold.
 # sources: flows/objects this doc documents. Thresholds here are guarded by
 # test/docs-drift.test.ts; build ignores unknown frontmatter keys.
 sources:
@@ -79,22 +79,28 @@ When a deal of **$100,000** or more is marked **Closed Won**, the owner is
 notified automatically — the owner alone, not their manager. A deal at exactly
 $100,000 counts: the large-deal line is inclusive everywhere.
 
-## 4. Large-deal approval — when a deal pauses for sign-off
+## 4. Initiation approval — when a deal pauses for sign-off
 
-Deals above a threshold **lock and wait** for approval. There is no "submit"
-step — the moment a deal's **amount** reaches $100K, it routes for approval
-automatically, and you can't move it forward until each required approver signs
-off.
+A new deal can be worked straight away — contacts, notes, amount, dates — but
+it cannot **change stage**, be **marked for bidding**, or become a **presales
+project** until it has passed initiation approval. Press **Submit for
+Initiation Approval** on the deal when it is ready; every submitted deal is
+reviewed, whatever its amount.
 
 | Deal amount | Required approval |
 |---|---|
-| **$100,000 or more** | Sales Manager review |
+| any submitted deal | Sales Manager review |
 | **> $500,000** | Sales Manager **and** Sales Director sign-off |
 
 While an approval is pending, the opportunity is **locked** and its
 **Approval Status** shows the live state. On full approval it is stamped
 **Approved** (with date) and you're notified. On rejection it is stamped
-**Rejected** — revise and resubmit. Approvers act from their **Approvals → Inbox**.
+**Rejected** — revise and press **Submit for Initiation Approval** again.
+Approvers act from their **Approvals → Inbox**.
+
+Closing a deal — **Closed Won** or **Closed Lost** — is not a stage you set by
+hand: file an **Opportunity Change Request** (win / loss) and the stage takes
+effect when it is approved.
 
 ## 5. Quotes
 

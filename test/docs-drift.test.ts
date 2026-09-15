@@ -149,27 +149,9 @@ const cronDisplay = (raw: string) => {
 };
 
 const RULES: Rule[] = [
-  {
-    label: 'manager approval threshold',
-    // Anchored on the lowercase `record.` scope, which is what distinguishes
-    // the START condition's entry gate from the director tier's
-    // `oppRecord.amount > 500000` (the match is case-sensitive, so
-    // `oppRecord.amount` cannot satisfy `record\.amount`). It used to lean on
-    // the neighbouring `&& (record.approval_status` clause instead, which
-    // broke the moment #633 inserted the `has(...)` / `!= null` totality
-    // guards between the two — a drift detector should key on the value's own
-    // scope, not on whatever happens to sit next to it.
-    //
-    // The OPERATOR is spelled out (`>=` since #1087) rather than made optional.
-    // A `>=?` would keep matching through an operator flip and quietly publish
-    // the same number under a changed meaning; as written, flipping the gate
-    // fails here as "pattern not found in the conditions of …", which is the
-    // right kind of loud — the published table in `crm_sales.md` / `crm_admin.md`
-    // states the operator as well as the value, and both have to move together.
-    extract: () => capCel('opportunity_approval', /record\.amount >= (\d+)/),
-    display: money,
-    docs: ['crm_sales.md', 'crm_admin.md'],
-  },
+  // The manager tier stopped being an amount in #11 — every submitted deal
+  // enters approval — so the only published approval number left is the
+  // director tier below.
   {
     label: 'director approval threshold',
     extract: () => capCel('opportunity_approval', /oppRecord\.amount > (\d+)/),
