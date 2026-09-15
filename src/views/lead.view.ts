@@ -579,6 +579,9 @@ export const LeadViews = defineView({
             { field: 'rating', widget: 'star_rating' },
             'lead_source',
             'industry',
+            // Process sheet step 6 — 需求类型 / 预计金额.
+            'demand_type',
+            'expected_amount',
             'annual_revenue',
             'number_of_employees',
             // See the default form: `unqualified` requires a reason.
