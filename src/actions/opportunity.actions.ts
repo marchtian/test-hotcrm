@@ -118,6 +118,28 @@ export const MassUpdateStageAction: Action = {
       const selected = Array.isArray(input._selectedIds) ? input._selectedIds : [];
       const ids = selected.length ? selected : (ctx.recordId ? [ctx.recordId] : []);
       if (!ids.length) throw new Error('mass_update_stage: no opportunity selected');
+      // The initiation gate (\`opportunity_initiation_gate.hook.ts\`) judges
+      // USER writes only, and an action body writes under the platform
+      // identity — so the same two rules are re-stated here (#11): closing
+      // goes through a change request, and any other stage move needs an
+      // approved initiation. Refused BEFORE the loop so a mixed selection
+      // moves nothing rather than half.
+      if (newStage === 'closed_won' || newStage === 'closed_lost') {
+        throw new Error('商机不能直接置为赢单 / 丢单。请新建「商机状态变更申请」，审批通过后状态自动生效。');
+      }
+      const rows = await ctx.api.object('crm_opportunity').find({
+        where: { id: { $in: ids } },
+        fields: ['id', 'name', 'stage', 'approval_status'],
+        top: ids.length,
+      });
+      const blocked = (rows ?? []).filter((r) => r.approval_status !== 'approved' && r.stage !== newStage);
+      if (blocked.length) {
+        throw new Error(
+          '以下商机尚未通过立项审批，不能更新阶段：'
+          + blocked.map((r) => '「' + (r.name ?? r.id) + '」').join('、')
+          + '。请先提交立项审批并等待通过。'
+        );
+      }
       const missed = [];
       let firstCause = '';
       let updated = 0;
@@ -181,7 +203,7 @@ export const MassUpdateStageAction: Action = {
       }
       return { stage: newStage, updated };
     `,
-    capabilities: ['api.write'],
+    capabilities: ['api.read', 'api.write'],
     timeoutMs: 10000,
   },
   locations: ['list_toolbar'],
@@ -220,5 +242,54 @@ export const GenerateQuoteAction: Action = {
   locations: ['record_header', 'record_more', 'list_item'],
   visible: P`has(record.stage) && record.stage != "closed_won" && record.stage != "closed_lost"`,
   successMessage: 'Quote created from opportunity!',
+  refreshAfter: true,
+};
+
+/**
+ * Submit for Initiation Approval — process sheet step 11's "submit" step.
+ *
+ * Flips `initiation_requested`, which is what the `opportunity_approval` flow
+ * enters on; there is no amount threshold on the entry any more (#8 / #11) —
+ * the director tier above $500K is decided inside the flow. A rejected deal
+ * is re-submittable: its `approval_status` is reset to `not_required` in the
+ * same write so the flow's own re-entry guard lets it back in.
+ *
+ * Until the flow stamps `approved`, `opportunity_initiation_gate.hook.ts`
+ * refuses stage and bid changes on the deal.
+ */
+export const SubmitOpportunityInitiationAction: Action = {
+  name: 'submit_opportunity_initiation',
+  label: 'Submit for Initiation Approval',
+  objectName: 'crm_opportunity',
+  icon: 'send',
+  type: 'script',
+  body: {
+    language: 'js',
+    source: `
+      const id = ctx.recordId;
+      if (!id) throw new Error('submit_opportunity_initiation requires a recordId');
+      const src = ctx.record ?? {};
+      if (src.stage === 'closed_won' || src.stage === 'closed_lost') {
+        throw new Error('已关闭的商机不能提交立项审批。');
+      }
+      if (src.approval_status === 'pending') {
+        throw new Error('该商机已在立项审批中，请等待审批结果。');
+      }
+      if (src.approval_status === 'approved') {
+        throw new Error('该商机已通过立项审批，无需再次提交。');
+      }
+      const patch = { id: id, initiation_requested: true };
+      if (src.approval_status === 'rejected') patch.approval_status = 'not_required';
+      await ctx.api.object('crm_opportunity').update(patch, { where: { id: id } });
+      return { id: id };
+    `,
+    capabilities: ['api.write'],
+    timeoutMs: 5000,
+  },
+  locations: ['record_header', 'record_more'],
+  visible: P`has(record.stage) && record.stage != "closed_won" && record.stage != "closed_lost"
+    && (!has(record.approval_status) || record.approval_status == null
+      || record.approval_status == "not_required" || record.approval_status == "rejected")`,
+  successMessage: 'Submitted for initiation approval.',
   refreshAfter: true,
 };

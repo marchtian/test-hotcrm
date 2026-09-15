@@ -2,11 +2,17 @@
 
 import { P } from '@objectstack/spec';
 import type * as Automation from '@objectstack/spec/automation';
-import { HIGH_VALUE_DEAL_AMOUNT, LARGE_DEAL_AMOUNT } from '../objects/_thresholds';
+import { HIGH_VALUE_DEAL_AMOUNT } from '../objects/_thresholds';
 type Flow = Automation.Flow;
 
 /**
- * Opportunity Approval — tiered sign-off for large deals.
+ * Opportunity Initiation Approval — tiered sign-off on every submitted deal.
+ *
+ * Process sheet step 11 (#8 / #11): the entry is the rep's explicit
+ * `submit_opportunity_initiation` action, which flips `initiation_requested`;
+ * there is NO amount threshold on the entry any more. A deal that has not
+ * been submitted is not reviewed, and until it is `approved` the
+ * `opportunity_initiation_gate` hook refuses stage and bid changes on it.
  *
  * Expressed as **Approval nodes** (`type: 'approval'`, ADR-0019): the engine
  * opens an approval request on entry, suspends the run, and resumes down the
@@ -16,17 +22,13 @@ type Flow = Automation.Flow;
  * authoring surfaces were removed in ObjectStack 7.4.
  *
  * Tiered policy (single source of truth — no double-firing):
- *   - amount >= $100K         → Sales Manager review
+ *   - every submitted deal    → Sales Manager review
  *   - amount > $500K          → additionally Sales Director sign-off
  *
- * The entry gate is INCLUSIVE at the line (`>=`) and the director tier is
- * exclusive (`>`): those are not the same kind of number. `LARGE_DEAL_AMOUNT` is
- * the one line this app draws around "large deal", and every consumer of it —
- * this gate, its insert twin, the won-deal alert and both sharing rules — must
- * cut the same way, so a deal at exactly $100,000 is large everywhere or
- * nowhere. `HIGH_VALUE_DEAL_AMOUNT` below is a matched PAIR (`> 500000` /
- * `<= 500000`) whose two halves must partition, which is a different property
- * and is left alone.
+ * `HIGH_VALUE_DEAL_AMOUNT` is a matched PAIR (`> 500000` / `<= 500000`) whose
+ * two halves must partition — `test/deal-threshold-parity.test.ts` pins that.
+ * `LARGE_DEAL_AMOUNT` is no longer read here; it still draws the line for the
+ * won-deal alert and both sharing rules.
  *
  * On full approval the deal is stamped `approval_status = approved` (+ date);
  * any rejection stamps `approval_status = rejected`. The record is locked while
@@ -35,7 +37,7 @@ type Flow = Automation.Flow;
 export const OpportunityApprovalFlow: Flow = {
   name: 'opportunity_approval',
   label: 'Opportunity Initiation Approval',
-  description: 'Tiered approval for opportunities: manager review at $100K or more, director sign-off > $500K.',
+  description: 'Tiered approval for submitted opportunities: manager review on every submission, director sign-off > $500K.',
   type: 'record_change',
   status: 'active',
   // Same user-less exposure as every record-change flow (ADR-0049) — and the
@@ -79,16 +81,13 @@ export const OpportunityApprovalFlow: Flow = {
         // freeze hook rejects approval-status writes on closed records, so
         // without this guard the flow opened a locked approval request it
         // could never resolve (lockRecord held the closed record hostage).
-        // TOTALITY: `has(...)` on every read, plus `!= null` on the
-        // ordering comparison — `has()` passes an explicit null and
-        // `record.amount >= 100000` then aborts with
-        // `no such overload: dyn<null> >= int`. Measured total as authored
-        // today (amount/stage are required, approval_status is defaulted), but
-        // that is `crm_opportunity`'s schema doing the work, not the
-        // predicate. An absent `approval_status` reads the same as the null
-        // this condition already tolerates; an absent `stage` is not a settled
-        // stage, so it must not block approval.
-        condition: P`has(record.amount) && record.amount != null && record.amount >= ${LARGE_DEAL_AMOUNT}
+        // TOTALITY: `has(...)` on every read. `initiation_requested` is a
+        // defaulted boolean, and `== true` on a null reads false rather than
+        // aborting, so a row that predates the field simply never enters. An
+        // absent `approval_status` reads the same as the null this condition
+        // already tolerates; an absent `stage` is not a settled stage, so it
+        // must not block approval.
+        condition: P`has(record.initiation_requested) && record.initiation_requested == true
           && (!has(record.approval_status) || record.approval_status == "not_required" || record.approval_status == null)
           && (!has(record.stage) || (record.stage != "closed_won" && record.stage != "closed_lost"))`,
       },
@@ -100,7 +99,7 @@ export const OpportunityApprovalFlow: Flow = {
       config: { objectName: 'crm_opportunity', filter: { id: '{record.id}' }, outputVariable: 'oppRecord' },
     },
 
-    // ── Tier 1: Sales Manager review (all deals at $100K or more) ───
+    // ── Tier 1: Sales Manager review (every submitted deal) ─────────
     {
       id: 'manager_review',
       type: 'approval',
@@ -265,7 +264,7 @@ export const OpportunityApprovalOnCreateFlow: Flow = {
   ...OpportunityApprovalFlow,
   name: 'opportunity_approval_on_create',
   label: 'Opportunity Initiation Approval (on create)',
-  description: 'Approval intake for opportunities created above the threshold (insert-time twin of opportunity_approval).',
+  description: 'Approval intake for opportunities created already submitted (insert-time twin of opportunity_approval).',
   nodes: OpportunityApprovalFlow.nodes.map((n) =>
     n.id === 'start'
       ? { ...n, config: { ...n.config, triggerType: 'record-after-create' } }

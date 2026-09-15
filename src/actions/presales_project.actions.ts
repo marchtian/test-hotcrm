@@ -6,7 +6,7 @@ import type { Action } from '@objectstack/spec/ui';
  * Create Presales Project — the "一键立项" on an opportunity (process sheet
  * step 15). Copies the opportunity's identity, account, category, amount and
  * iron-triangle roles onto a new presales project so nothing is keyed in
- * twice. The opportunity must not be sitting in, or have failed, approval.
+ * twice. The opportunity must have PASSED initiation approval (step 15).
  *
  * Script-typed, same shape as `clone_opportunity`: reads the source from
  * `ctx.record`, writes with `api.write`.
@@ -24,11 +24,17 @@ export const CreatePresalesProjectAction: Action = {
       if (!id) throw new Error('create_presales_project requires a recordId');
       const src = ctx.record ?? {};
       if (!src.crm_account) throw new Error('create_presales_project: source account not loaded.');
+      // Step 15: "售前立项必须引用客户关系系统中已审批通过的商机数据" — only
+      // an APPROVED opportunity qualifies; never-submitted (not_required)
+      // is refused just like pending and rejected (#11).
       if (src.approval_status === 'pending') {
         throw new Error('商机立项审批尚未完成，审批通过后才能生成售前立项。');
       }
       if (src.approval_status === 'rejected') {
         throw new Error('商机立项审批已驳回，不能生成售前立项。');
+      }
+      if (src.approval_status !== 'approved') {
+        throw new Error('商机尚未提交立项审批，请先点击「提交立项审批」，审批通过后才能生成售前立项。');
       }
       if (src.stage === 'closed_lost') {
         throw new Error('已丢单的商机不能生成售前立项。');

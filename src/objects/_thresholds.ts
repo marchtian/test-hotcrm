@@ -4,16 +4,19 @@
  * Commercial governance thresholds — the money lines this app draws, authored
  * ONCE.
  *
- * "What counts as a large deal" is one business question with four consumers:
- * the approval entry gate and the won-deal alert (`src/flows/`), and the
- * sales-director and executive rules (`src/sharing/opportunity.sharing.ts`).
- * Each interpolates the constant below, and each cuts at `>=`.
+ * "What counts as a large deal" is one business question with three consumers:
+ * the won-deal alert (`src/flows/`), and the sales-director and executive
+ * rules (`src/sharing/opportunity.sharing.ts`). Each interpolates the constant
+ * below, and each cuts at `>=`. The opportunity approval ENTRY used to be a
+ * fourth consumer; since #11 every submitted opportunity is reviewed
+ * regardless of amount, so the entry no longer reads it (the director tier
+ * still reads `HIGH_VALUE_DEAL_AMOUNT`).
  *
- * ⛔ Both halves are load-bearing, and neither may drift. Four independent
- * literals mean a deployment that raises the bar in one place ships a product
- * where a deal is large enough for the director to *see* and not large enough
- * to *approve* — governance narrower than visibility, which is the
- * counter-intuitive direction the next author will assume the reverse of.
+ * ⛔ Both halves are load-bearing, and neither may drift. Independent literals
+ * mean a deployment that raises the bar in one place ships a product where a
+ * deal is large enough for the director to *see* and not large enough to be
+ * *announced* when won — visibility and governance answering different
+ * questions, which is the drift the next author will not expect.
  * Maintainer ruling: **a deal at the line is a large deal**, so every site cuts
  * at `>=` rather than `>`. `test/deal-threshold-parity.test.ts` reads the
  * compiled CEL of every flow condition and sharing rule back out of the shipped
@@ -31,8 +34,7 @@
 /**
  * A "large deal" — the amount at which an opportunity stops being routine.
  *
- * Consumed by the approval entry gate, the won-deal alert and both large-deal
- * sharing rules. `src/docs/crm_sales.md` and `src/docs/crm_admin.md` publish
+ * Consumed by the won-deal alert and both large-deal sharing rules. `src/docs/crm_sales.md` and `src/docs/crm_admin.md` publish
  * this number to users, and `test/docs-drift.test.ts` fails if they drift from
  * what the flows actually ship.
  */

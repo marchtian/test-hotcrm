@@ -1279,6 +1279,8 @@ describe('the two defects, reproduced end-to-end', () => {
         const opp = await api.object('crm_opportunity').insert({
           name: `Deal ${amount}`, amount, stage: 'negotiation',
           close_date: '2026-12-31', crm_account: account.id,
+          // #11: the entry is the submit flag, not the amount.
+          initiation_requested: true,
         });
         const fresh = await api.object('crm_opportunity').findOne({ where: { id: opp.id } });
         const res = await b.engine.execute('opportunity_approval_on_create', {

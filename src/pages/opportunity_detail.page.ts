@@ -57,7 +57,7 @@ export const OpportunityDetailPage: Page = {
             // crm_opportunity-scoped action — `generate_quote` /
             // `clone_opportunity` in `src/actions/opportunity.actions.ts`, the
             // activity trio in `src/actions/global.actions.ts`.
-            actions: ['create_presales_project', 'generate_quote',
+            actions: ['submit_opportunity_initiation', 'create_presales_project', 'generate_quote',
               'clone_opportunity',
               'log_call',
               'log_meeting',

@@ -109,8 +109,8 @@ revisits:
 
 | Behavior | Current setting | Defined in |
 |---|---|---|
-| Large-deal approval (manager) | amount **$100,000 or more** | `opportunity-approval.flow.ts` |
-| Large-deal approval (+ director) | amount **> $500,000** | `opportunity-approval.flow.ts` |
+| Initiation approval (manager) | every deal submitted via **Submit for Initiation Approval** | `opportunity-approval.flow.ts` |
+| Initiation approval (+ director) | amount **> $500,000** | `opportunity-approval.flow.ts` |
 | Hot-lead follow-up SLA | **1 day** (Lead Score ≥ 4★) | `lead-assignment.flow.ts` |
 | Standard-lead follow-up SLA | **3 days** | `lead-assignment.flow.ts` |
 | Stalled-deal nudge | **> 14 days** in stage, swept daily **07:30** | `opportunity-stagnation.flow.ts` |

@@ -290,6 +290,18 @@ export const Opportunity = ObjectSchema.create({
     solution_manager: Field.lookup('sys_user', { label: 'Solution Manager', group: 'iron_triangle' }),
     delivery_manager: Field.lookup('sys_user', { label: 'Delivery Manager', group: 'iron_triangle' }),
 
+    // Process sheet step 11 — flipped by the `submit_opportunity_initiation`
+    // action; the `opportunity_approval` flow enters on it. Every submitted
+    // opportunity is reviewed regardless of amount (#8 / #11), and until
+    // `approval_status` is `approved` the initiation gate hook refuses stage
+    // and bid changes. Not readonly: the action's platform write must land it.
+    initiation_requested: Field.boolean({
+      label: 'Initiation Requested',
+      help: 'Set by Submit for Initiation Approval; the initiation approval flow enters on it.',
+      group: 'sales_process',
+      defaultValue: false,
+    }),
+
     approval_status: Field.select({
       label: 'Approval Status',
       group: 'sales_process',

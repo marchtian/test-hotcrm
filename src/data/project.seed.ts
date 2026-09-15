@@ -341,6 +341,9 @@ export const dtOpportunities = defineSeed(Opportunity, {
       crm_account: '唐山黑猫炭黑有限责任公司',
       primary_contact: 'zhao.yang@tangshan.example.com',
       ...stageOf.negotiation, ...amountAt(1200000, 80),
+      // Step 11 (#11): already through initiation approval — only the demo deal
+      // '集团销售管理 CRM 系统' is left unsubmitted to walk submit → approve → 一键立项.
+      approval_status: 'approved', initiation_requested: true,
       close_date: cel`daysFromNow(20)`,
       stage_entry_date: cel`daysAgo(5)`,
       type: 'new_business',
@@ -362,6 +365,9 @@ export const dtOpportunities = defineSeed(Opportunity, {
       crm_account: '邯郸黑猫炭黑有限责任公司',
       primary_contact: 'yang.lei@handan.example.com',
       ...stageOf.needs_analysis, ...amountAt(380000, 40),
+      // Step 11 (#11): already through initiation approval — only the demo deal
+      // '集团销售管理 CRM 系统' is left unsubmitted to walk submit → approve → 一键立项.
+      approval_status: 'approved', initiation_requested: true,
       close_date: cel`daysFromNow(75)`,
       stage_entry_date: cel`daysAgo(14)`,
       type: 'new_business',
@@ -381,6 +387,9 @@ export const dtOpportunities = defineSeed(Opportunity, {
       crm_account: '景德镇陶瓷集团有限公司',
       primary_contact: 'wu.guohua@taoci.example.com',
       ...stageOf.qualification, ...amountAt(2600000, 25),
+      // Step 11 (#11): already through initiation approval — only the demo deal
+      // '集团销售管理 CRM 系统' is left unsubmitted to walk submit → approve → 一键立项.
+      approval_status: 'approved', initiation_requested: true,
       close_date: cel`daysFromNow(120)`,
       stage_entry_date: cel`daysAgo(10)`,
       type: 'new_business',

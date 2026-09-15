@@ -277,6 +277,7 @@ export const pipeline: Record<string, ObjectTranslationData> = {
         options: { not_required: '无需审批', pending: '审批中', approved: '已批准', rejected: '已驳回' },
       },
       approved_date: { label: '批准时间' },
+      initiation_requested: { label: '已提交立项审批', help: '由「提交立项审批」按钮置为是；提交后进入商机立项审批。' },
       win_reason: {
         help: '赢单原因。将商机关闭为"成交"时必填。',
         label: '赢单原因',
@@ -363,6 +364,10 @@ export const pipeline: Record<string, ObjectTranslationData> = {
       generate_quote: {
         label: '生成报价单',
         successMessage: '已根据商机创建报价单！',
+      },
+      submit_opportunity_initiation: {
+        label: '提交立项审批',
+        successMessage: '已提交商机立项审批，审批通过后才能更新阶段、投标和生成售前立项。',
       },
       create_presales_project: {
         label: '生成售前立项',
