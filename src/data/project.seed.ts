@@ -44,6 +44,9 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '黑猫炭黑集团总部',
       short_name: '集团总部',
+      org_level: 'group_hq',
+      legal_representative: '（示例）',
+      registered_capital: 736000000,
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -64,6 +67,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '韩城黑猫炭黑有限责任公司',
       short_name: '韩城黑猫',
+      org_level: 'subsidiary',
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -82,6 +86,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '乌海黑猫炭黑有限责任公司',
       short_name: '乌海黑猫',
+      org_level: 'subsidiary',
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -100,6 +105,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '邯郸黑猫炭黑有限责任公司',
       short_name: '邯郸黑猫',
+      org_level: 'subsidiary',
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -118,6 +124,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '唐山黑猫炭黑有限责任公司',
       short_name: '唐山黑猫',
+      org_level: 'subsidiary',
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -136,6 +143,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '济宁黑猫炭黑有限责任公司',
       short_name: '济宁黑猫',
+      org_level: 'subsidiary',
       type: 'customer',
       customer_category: 'internal',
       account_status: 'active',
@@ -154,6 +162,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '景德镇陶瓷集团有限公司',
       short_name: '陶瓷集团',
+      org_level: 'independent',
       type: 'prospect',
       customer_category: 'regular',
       account_status: 'active',
@@ -173,6 +182,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '江西赣锋新能源材料有限公司',
       short_name: '赣锋新材',
+      org_level: 'independent',
       type: 'prospect',
       customer_category: 'regular',
       account_status: 'active',
@@ -192,6 +202,7 @@ export const dtAccounts = defineSeed(Account, {
     {
       name: '景德镇建设工程招标代理有限公司',
       short_name: '建设招标代理',
+      org_level: 'independent',
       type: 'partner',
       customer_category: 'bidding_agent',
       account_status: 'active',
@@ -213,15 +224,15 @@ export const dtContacts = defineSeed(Contact, {
   mode: 'upsert',
   externalId: 'email',
   records: [
-    { salutation: 'mr', first_name: '建国', last_name: '王', email: 'wang.jianguo@heimao.example.com', phone: '+86-138-0000-0001', title: '信息化部部长', crm_account: '黑猫炭黑集团总部', is_primary: true },
-    { salutation: 'ms', first_name: '芳', last_name: '李', email: 'li.fang@heimao.example.com', phone: '+86-138-0000-0002', title: '销售管理部经理', crm_account: '黑猫炭黑集团总部' },
-    { salutation: 'mr', first_name: '强', last_name: '张', email: 'zhang.qiang@hancheng.example.com', phone: '+86-138-0000-0003', title: '生产副总', crm_account: '韩城黑猫炭黑有限责任公司', is_primary: true },
-    { salutation: 'mr', first_name: '伟', last_name: '刘', email: 'liu.wei@hancheng.example.com', phone: '+86-138-0000-0004', title: '设备与自动化主管', crm_account: '韩城黑猫炭黑有限责任公司' },
+    { salutation: 'mr', first_name: '建国', last_name: '王', email: 'wang.jianguo@heimao.example.com', phone: '+86-138-0000-0001', title: '信息化部部长', crm_account: '黑猫炭黑集团总部', is_primary: true, gender: 'male', buying_function: 'decision_maker', attitude: 'supportive', relationship_strength: 'strong' },
+    { salutation: 'ms', first_name: '芳', last_name: '李', email: 'li.fang@heimao.example.com', phone: '+86-138-0000-0002', title: '销售管理部经理', crm_account: '黑猫炭黑集团总部', gender: 'female', buying_function: 'end_user', attitude: 'supportive', relationship_strength: 'medium' },
+    { salutation: 'mr', first_name: '强', last_name: '张', email: 'zhang.qiang@hancheng.example.com', phone: '+86-138-0000-0003', title: '生产副总', crm_account: '韩城黑猫炭黑有限责任公司', is_primary: true, gender: 'male', buying_function: 'economic_buyer', attitude: 'neutral', relationship_strength: 'medium' },
+    { salutation: 'mr', first_name: '伟', last_name: '刘', email: 'liu.wei@hancheng.example.com', phone: '+86-138-0000-0004', title: '设备与自动化主管', crm_account: '韩城黑猫炭黑有限责任公司', gender: 'male', buying_function: 'technical_evaluator', attitude: 'supportive', relationship_strength: 'strong' },
     { salutation: 'ms', first_name: '敏', last_name: '陈', email: 'chen.min@wuhai.example.com', phone: '+86-138-0000-0005', title: '能源管理部主任', crm_account: '乌海黑猫炭黑有限责任公司', is_primary: true },
     { salutation: 'mr', first_name: '磊', last_name: '杨', email: 'yang.lei@handan.example.com', phone: '+86-138-0000-0006', title: '安全总监', crm_account: '邯郸黑猫炭黑有限责任公司', is_primary: true },
     { salutation: 'mr', first_name: '洋', last_name: '赵', email: 'zhao.yang@tangshan.example.com', phone: '+86-138-0000-0007', title: '总经理助理', crm_account: '唐山黑猫炭黑有限责任公司', is_primary: true },
     { salutation: 'ms', first_name: '静', last_name: '周', email: 'zhou.jing@jining.example.com', phone: '+86-138-0000-0008', title: 'IT 主管', crm_account: '济宁黑猫炭黑有限责任公司', is_primary: true },
-    { salutation: 'mr', first_name: '国华', last_name: '吴', email: 'wu.guohua@taoci.example.com', phone: '+86-138-0000-0009', title: '信息中心主任', crm_account: '景德镇陶瓷集团有限公司', is_primary: true },
+    { salutation: 'mr', first_name: '国华', last_name: '吴', email: 'wu.guohua@taoci.example.com', phone: '+86-138-0000-0009', title: '信息中心主任', crm_account: '景德镇陶瓷集团有限公司', is_primary: true, gender: 'male', buying_function: 'technical_evaluator', attitude: 'unknown', relationship_strength: 'weak' },
     { salutation: 'ms', first_name: '雪', last_name: '孙', email: 'sun.xue@ganfeng.example.com', phone: '+86-138-0000-0010', title: '采购经理', crm_account: '江西赣锋新能源材料有限公司', is_primary: true },
   ],
 });
@@ -375,6 +386,10 @@ export const dtOpportunities = defineSeed(Opportunity, {
       type: 'new_business',
       lead_source: 'event',
       is_bid: true,
+      expected_bid_date: cel`daysFromNow(60)`,
+      subcontract_plan: 'partial',
+      subcontract_notes: '弱电与园区网络拟分包给本地集成商。',
+      payment_terms_notes: '3-3-3-1：合同签订 30%、上线 30%、验收 30%、质保期满 10%。',
       opportunity_level: 'level_a',
       priority: 'high',
       controllability: 'low',
@@ -551,6 +566,7 @@ export const deliveryProjects = defineSeed(DeliveryProject, {
       actual_start_date: cel`daysAgo(105)`,
       cost_center: 'delivery_1',
       accounting_cost_center: 'data_ai',
+      department: '交付一部 · MES 项目组',
       budget_labor: 300000, budget_service: 50000, budget_hardware: 150000, budget_expense: 20000,
       contract_amount: 700000,
       // Set by the cost administrator: over budget ⇒ timesheets refused.

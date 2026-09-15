@@ -54,6 +54,9 @@ export const customer: Record<string, ObjectTranslationData> = {
         label: '审批状态',
         options: { not_required: '无需审批', pending: '审批中', approved: '已批准', rejected: '已驳回' },
       },
+      org_level: { label: '组织层级', options: { group_hq: '集团总部', subsidiary: '子公司', branch: '分支机构', independent: '独立企业' } },
+      legal_representative: { label: '法定代表人' },
+      registered_capital: { label: '注册资本' },
       short_name: { label: '客户简称' },
       social_credit_code: { label: '统一社会信用代码' },
       incumbent_vendor: { label: '当前主要服务商' },
@@ -171,6 +174,13 @@ export const customer: Record<string, ObjectTranslationData> = {
       phone: { label: '电话' },
       mobile: { label: '手机' },
       title: { label: '职位' },
+      gender: { label: '性别', options: { male: '男', female: '女', undisclosed: '未填' } },
+      buying_function: {
+        label: '角色',
+        options: { decision_maker: '决策者', economic_buyer: '经济买家', technical_evaluator: '技术评估', end_user: '使用者', champion: '内部支持者', gatekeeper: '采购 / 把关' },
+      },
+      attitude: { label: '对我司态度', options: { supportive: '支持', neutral: '中立', opposed: '反对', unknown: '未知' } },
+      relationship_strength: { label: '与销售关系强度', options: { strong: '强', medium: '中', weak: '弱', none: '无' } },
       department: {
         label: '部门',
         options: {

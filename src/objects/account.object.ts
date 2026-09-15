@@ -240,6 +240,31 @@ export const Account = ObjectSchema.create({
       maxLength: 18,
     }),
 
+    // Process sheet step 1: 组织层级 and 注册信息 (beyond the credit code).
+    org_level: Field.select({
+      label: 'Organization Level',
+      group: 'basic',
+      options: [
+        { label: 'Group Headquarters', value: 'group_hq' },
+        { label: 'Subsidiary', value: 'subsidiary' },
+        { label: 'Branch', value: 'branch' },
+        { label: 'Independent Company', value: 'independent' },
+      ],
+    }),
+
+    legal_representative: Field.text({
+      label: 'Legal Representative',
+      group: 'business',
+      maxLength: 100,
+    }),
+
+    registered_capital: Field.currency({
+      label: 'Registered Capital',
+      group: 'business',
+      scale: 2,
+      min: 0,
+    }),
+
     incumbent_vendor: Field.text({
       label: 'Incumbent IT Vendor',
       group: 'business',

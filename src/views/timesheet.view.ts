@@ -18,7 +18,8 @@ export const TimesheetViews = defineView({
     data: { provider: 'object', object: 'crm_timesheet' },
     columns: [
       { field: 'timesheet_number', width: 120, link: true, pinned: 'left' },
-      { field: 'crm_delivery_project', width: 220 },
+      { field: 'crm_delivery_project', width: 200 },
+      { field: 'crm_presales_project', width: 180 },
       { field: 'owner_id', width: 140 },
       { field: 'period_month', width: 120, sortable: true },
       { field: 'hours', width: 90, align: 'right', summary: 'sum' },
@@ -39,7 +40,7 @@ export const TimesheetViews = defineView({
       type: 'grid',
       label: 'My Timesheets',
       data: { provider: 'object', object: 'crm_timesheet' },
-      columns: ['timesheet_number', 'crm_delivery_project', 'period_month', 'hours', 'labor_cost', 'status', 'approver'],
+      columns: ['timesheet_number', 'crm_delivery_project', 'crm_presales_project', 'period_month', 'hours', 'labor_cost', 'status', 'approver'],
       filter: [{ field: 'owner_id', operator: 'equals', value: '{current_user_id}' }],
       sort: [{ field: 'period_month', order: 'desc' }],
     },

@@ -271,6 +271,18 @@ export const Opportunity = ObjectSchema.create({
     revenue_type: Field.select({ label: 'Revenue Recognition', group: 'initiation', options: [...REVENUE_TYPE_OPTIONS] }),
     customer_approval_date: Field.date({ label: 'Customer Project Approval Date', group: 'initiation' }),
     expected_sign_date: Field.date({ label: 'Expected Signing Date', group: 'initiation' }),
+    expected_bid_date: Field.date({ label: 'Expected Bidding Date', group: 'initiation' }),
+    subcontract_plan: Field.select({
+      label: 'Subcontracting',
+      group: 'initiation',
+      options: [
+        { label: 'None', value: 'none', default: true },
+        { label: 'Partial', value: 'partial' },
+        { label: 'Full', value: 'full' },
+      ],
+    }),
+    payment_terms_notes: Field.textarea({ label: 'Payment Terms', group: 'initiation' }),
+    subcontract_notes: Field.textarea({ label: 'Subcontracting Notes', group: 'initiation' }),
     risk_analysis: Field.textarea({ label: 'Risk Analysis', group: 'initiation' }),
 
     // ─── Iron triangle (step 13) — copied onto the presales project ──────

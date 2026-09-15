@@ -69,7 +69,17 @@ const timesheetCostingGateHook: Hook = {
 
     const api = ctx.api as HookApi | undefined;
     const projectId = typeof merged.crm_delivery_project === 'string' ? merged.crm_delivery_project : '';
-    if (!api || !projectId) return;
+    const presalesId = typeof merged.crm_presales_project === 'string' ? merged.crm_presales_project : '';
+    if (!api) return;
+    if (!projectId) {
+      // Presales timesheet (step 33): no budget gate; approver = the presales
+      // project's manager.
+      if (presalesId && !merged.approver) {
+        const presales = await api.object('crm_presales_project').findOne({ where: { id: presalesId }, fields: ['id', 'project_manager'] });
+        if (presales && typeof presales.project_manager === 'string' && presales.project_manager) input.approver = presales.project_manager;
+      }
+      return;
+    }
 
     const project = await api.object('crm_delivery_project').findOne({
       where: { id: projectId },

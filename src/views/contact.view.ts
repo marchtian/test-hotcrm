@@ -21,6 +21,8 @@ export const ContactViews = defineView({
       { field: 'crm_account', width: 200 },
       { field: 'title', width: 180 },
       { field: 'department', width: 140 },
+      { field: 'buying_function', width: 140 },
+      { field: 'attitude', width: 110 },
       { field: 'email', width: 220 },
       { field: 'phone', width: 150 },
       { field: 'owner_id', width: 150 },

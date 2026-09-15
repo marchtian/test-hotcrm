@@ -19,6 +19,8 @@ export const AccountViews = defineView({
       { field: 'name', width: 240, sortable: true, link: true, pinned: 'left' },
       { field: 'industry', width: 140, sortable: true },
       { field: 'type', width: 130 },
+      { field: 'customer_category', width: 130 },
+      { field: 'account_status', width: 110 },
       { field: 'annual_revenue', width: 160, align: 'right', summary: 'sum' },
       { field: 'number_of_employees', width: 130, align: 'right', summary: 'avg' },
       { field: 'health_score', width: 140 },

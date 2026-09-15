@@ -125,12 +125,16 @@ export const DeliveryProject = ObjectSchema.create({
       options: [...COST_CENTER_OPTIONS],
     }),
 
+    department: Field.text({ label: 'Department', group: 'org', maxLength: 100 }),
+
     // ─── Roles (step 24) ───────────────────────────────────────────────
     // `project_manager` doubles as the approver of this project's timesheets.
     project_manager: Field.lookup('sys_user', { label: 'Project Manager', group: 'roles' }),
     project_director: Field.lookup('sys_user', { label: 'Project Director', group: 'roles' }),
     pricing_lead: Field.lookup('sys_user', { label: 'Resource Pricing Lead', group: 'roles' }),
     qa_lead: Field.lookup('sys_user', { label: 'Project QA', group: 'roles' }),
+    qa_director: Field.lookup('sys_user', { label: 'QA Director', group: 'roles' }),
+    subcontract_ts_owner: Field.lookup('sys_user', { label: 'Subcontract Timesheet Owner', group: 'roles' }),
 
     // ─── Budget baseline (steps 27–31) ─────────────────────────────────
     budget_labor: Field.currency({ label: 'Labor Services Budget', group: 'budget', scale: 2, min: 0 }),

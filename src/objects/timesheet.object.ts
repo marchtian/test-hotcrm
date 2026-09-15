@@ -48,11 +48,18 @@ export const Timesheet = ObjectSchema.create({
       format: 'TS-{0000}',
     }),
 
+    // Step 33: "销售填写售前项目 TS，交付填写交付项目 TS" — exactly one of the
+    // two must be set (`timesheet_project_required` below). Only delivery
+    // timesheets are costed against a budget; a presales timesheet records the
+    // hours and routes to the presales project's manager.
     crm_delivery_project: Field.lookup('crm_delivery_project', {
       label: 'Delivery Project',
       group: 'basic',
-      required: true,
-      storage: { notNull: true },
+    }),
+
+    crm_presales_project: Field.lookup('crm_presales_project', {
+      label: 'Presales Project',
+      group: 'basic',
     }),
 
     // First day of the month the hours belong to.
@@ -131,6 +138,7 @@ export const Timesheet = ObjectSchema.create({
 
   indexes: [
     { fields: ['crm_delivery_project'] },
+    { fields: ['crm_presales_project'] },
     { fields: ['owner_id'] },
     { fields: ['period_month'] },
     { fields: ['status'] },
@@ -142,6 +150,13 @@ export const Timesheet = ObjectSchema.create({
   },
 
   validations: [
+    {
+      name: 'timesheet_project_required',
+      type: 'script',
+      severity: 'error',
+      message: 'A timesheet must reference a delivery project or a presales project',
+      condition: P`(!has(record.crm_delivery_project) || record.crm_delivery_project == null) && (!has(record.crm_presales_project) || record.crm_presales_project == null)`,
+    },
     {
       name: 'hours_positive',
       type: 'script',
