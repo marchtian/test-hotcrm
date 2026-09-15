@@ -216,6 +216,12 @@ export const AccountViews = defineView({
           // At-Risk views' `type = customer` filter — with no form field it
           // could never be set, so those views matched nothing.
           'type',
+          // Process sheet step 1 — classification and registration.
+          'customer_category',
+          'account_status',
+          'short_name',
+          'social_credit_code',
+          'org_level',
           'industry',
           'phone',
           'website',
@@ -228,6 +234,21 @@ export const AccountViews = defineView({
           // cards now cover with could never have been set. Full span: an
           // image drop target in a half-width cell is a thumbnail-sized one.
           { field: 'logo', span: 'full' },
+        ],
+      },
+      {
+        // Process sheet step 3 (客户业务信息完善).
+        name: 'business_profile',
+        label: 'Business Profile',
+        columns: 2,
+        fields: [
+          'incumbent_vendor',
+          'annual_it_budget',
+          'payment_cycle',
+          'legal_representative',
+          'registered_capital',
+          'is_strategic_partner',
+          'ear_controlled',
         ],
       },
       {

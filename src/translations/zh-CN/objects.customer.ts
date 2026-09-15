@@ -151,6 +151,7 @@ export const customer: Record<string, ObjectTranslationData> = {
       system: { label: '系统' },
       // account.view.ts 表单区块名称 (#1100)
       profile: { label: '资料' },
+      business_profile: { label: '业务信息' },
       customer_success: { label: '客户成功' },
       locations: { label: '地址信息' },
       description: { label: '描述' },

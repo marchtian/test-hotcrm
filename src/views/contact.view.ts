@@ -86,6 +86,11 @@ export const ContactViews = defineView({
           { field: 'crm_account', required: true },
           'title',
           'department',
+          // Process sheet step 2 — who this person is to the deal.
+          'gender',
+          'buying_function',
+          'attitude',
+          'relationship_strength',
           'owner_id',
         ],
       },

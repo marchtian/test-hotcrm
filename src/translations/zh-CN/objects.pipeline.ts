@@ -348,6 +348,8 @@ export const pipeline: Record<string, ObjectTranslationData> = {
       iron_triangle: { label: '铁三角' },
       // opportunity.view.ts 表单区块名称 (#1100)
       overview: { label: '概览' },
+      initiation_info: { label: '立项信息' },
+      iron_triangle_roles: { label: '铁三角' },
       forecast: { label: '预测' },
       sales_strategy: { label: '销售策略' },
       win_loss: { label: '赢单/输单' },

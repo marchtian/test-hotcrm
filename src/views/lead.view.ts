@@ -268,6 +268,9 @@ export const LeadViews = defineView({
           },
           'lead_source',
           'industry',
+          // Process sheet step 6 — 需求类型 / 预计金额.
+          'demand_type',
+          'expected_amount',
           {
             field: 'owner_id',
             required: true,
