@@ -249,6 +249,7 @@ export const pipeline: Record<string, ObjectTranslationData> = {
         options: { not_required: 'Not Required', pending: 'Pending', approved: 'Approved', rejected: 'Rejected' },
       },
       approved_date: { label: 'Approved Date' },
+      initiation_requested: { label: 'Initiation Requested', help: 'Set by Submit for Initiation Approval; the initiation approval flow enters on it.' },
       win_reason: {
         label: 'Win Reason',
         help: 'Why this deal was won. Required to close an opportunity as Won.',

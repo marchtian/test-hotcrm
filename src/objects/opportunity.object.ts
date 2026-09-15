@@ -297,7 +297,7 @@ export const Opportunity = ObjectSchema.create({
     // and bid changes. Not readonly: the action's platform write must land it.
     initiation_requested: Field.boolean({
       label: 'Initiation Requested',
-      help: 'Set by Submit for Initiation Approval; the initiation approval flow enters on it.',
+      inlineHelpText: 'Set by Submit for Initiation Approval; the initiation approval flow enters on it.',
       group: 'sales_process',
       defaultValue: false,
     }),

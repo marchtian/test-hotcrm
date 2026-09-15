@@ -8,6 +8,7 @@
 pnpm install
 pnpm demo:reset            # 清空本地库 + 重新 build（种子数据在首次启动时装入）
 pnpm dev                   # 终端 1：http://localhost:4001 ，看到 "Press Ctrl+C to stop" 即可
+# 只拉了代码、不想重置库时：`pnpm build && pnpm dev`（`pnpm dev` 不会自己重建，会带着 STALE 警告跑旧构建）
 pnpm demo:staff:project    # 终端 2：建演示账号、绑岗位 / 权限集、认领种子记录、填审批人
 ```
 
